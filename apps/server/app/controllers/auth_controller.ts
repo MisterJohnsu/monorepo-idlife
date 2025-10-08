@@ -30,7 +30,7 @@ export default class AuthController {
 
       // Gerar token
       const tokenPayload = {
-        id: paciente.cd_paciente,
+        id: paciente.paciente_id,
         email: paciente.email,
         type: 'patient',
         timestamp: Date.now()
@@ -39,9 +39,9 @@ export default class AuthController {
 
       return response.json({
         user: {
-          cd_paciente: paciente.cd_paciente,
+          paciente_id: paciente.paciente_id,
           email: paciente.email,
-          nm_paciente: paciente.nm_paciente,
+          nm_paciente: paciente.paciente_name,
         },
         token: token
       })
@@ -78,7 +78,7 @@ export default class AuthController {
 
       // Gerar token
       const tokenPayload = {
-        id: medico.cd_medico,
+        id: medico.medico_id,
         email: medico.email,
         type: 'doctor',
         timestamp: Date.now()
@@ -87,11 +87,11 @@ export default class AuthController {
 
       return response.json({
         user: {
-          cd_medico: medico.cd_medico,
+          medico_id: medico.medico_id,
           email: medico.email,
-          nm_medico: medico.nm_medico,
+          medico_name: medico.medico_name,
           crm: medico.crm,
-          nm_especializacao: medico.nm_especializacao,
+          nm_especializacao: medico.especializacao,
         },
         token: token
       })

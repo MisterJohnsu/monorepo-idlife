@@ -3,13 +3,13 @@ import { DateTime } from 'luxon'
 
 export default class Medico extends BaseModel {
   @column({ isPrimary: true })
-  declare cd_medico: number
+  declare medico_id: number
 
   @column()
   declare crm: number
 
   @column()
-  declare nm_medico: string
+  declare medico_name: string
 
   @column()
   declare email: string
@@ -18,7 +18,7 @@ export default class Medico extends BaseModel {
   declare password: string
 
   @column()
-  declare nm_especializacao: string
+  declare especializacao: string
   
   @column.dateTime({ autoCreate: true, columnName: 'created_at', serializeAs: 'created_at' })
   declare created_at: DateTime

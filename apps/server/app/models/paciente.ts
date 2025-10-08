@@ -5,11 +5,14 @@ export default class Paciente extends BaseModel {
   public static table = 'pacientes'
 
   @column({ isPrimary: true })
-  declare cd_paciente: number
+  declare paciente_id: number
 
   // Campos obrigatórios
   @column()
-  declare nm_paciente: string
+  declare paciente_template: string
+
+  @column()
+  declare paciente_name: string
 
   @column()
   declare email: string
@@ -18,13 +21,13 @@ export default class Paciente extends BaseModel {
   declare cpf: string
 
   @column()
-  declare nm_sexo: string
+  declare sexo: string
 
   @column()
-  declare nm_tipo_sanguineo: string
+  declare tipo_sanguineo: string
 
   @column()
-  declare cd_telefone: string
+  declare telefone: string
 
   @column()
   declare dt_nascimento: string
@@ -34,31 +37,28 @@ export default class Paciente extends BaseModel {
 
   // Campos opcionais
   @column()
-  declare nm_convenio?: string | null
+  declare convenio?: string | null
 
   @column()
-  declare nm_alergia?: string | null
+  declare alergia?: string | null
 
   @column()
-  declare nm_aparelho?: string | null
+  declare aparelho?: string | null
 
   @column()
-  declare nm_medicamentos?: string | null
+  declare medicamentos?: string | null
 
   @column()
-  declare tx_info_adicional?: string | null
+  declare info_adicional?: string | null
 
   @column()
-  declare nm_doenca?: string | null
+  declare doencas?: string | null
 
   @column()
-  declare cd_telefone_ctt_emergencia?: string | null
+  declare telefone_ctt_emergencia?: string | null
 
   @column()
-  declare nm_ctt_emergencia?: string | null
-
-  @column()
-  declare cd_medico?: number | null
+  declare ctt_emergencia_name?: string | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

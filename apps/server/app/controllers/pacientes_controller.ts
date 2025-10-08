@@ -3,30 +3,30 @@ import hash from '@adonisjs/core/services/hash'
 import Paciente from '#models/paciente'
 
 export default class PacienteController {
-  public async register({ request, response }: HttpContext) {
+  public async create({ request, response }: HttpContext) {
     try {
       // Campos obrigatórios
       const requiredFields = [
-        'nm_paciente',
+        'paciente_name',
         'email',
         'cpf',
-        'nm_sexo',
-        'nm_tipo_sanguineo',
-        'cd_telefone',
+        'sexo',
+        'tipo_sanguineo',
+        'telefone',
         'dt_nascimento',
         'password'
       ]
 
       // Campos opcionais
       const optionalFields = [
-        'nm_convenio',
-        'nm_alergia',
-        'nm_aparelho',
-        'nm_medicamentos',
-        'tx_info_adicional',
-        'nm_doenca',
-        'cd_telefone_ctt_emergencia',
-        'nm_ctt_emergencia'
+        'convenio',
+        'alergia',
+        'aparelho',
+        'medicamentos',
+        'info_adicional',
+        'doencas',
+        'telefone_ctt_emergencia',
+        'ctt_emergencia_name'
       ]
 
       // Verificar se todos os campos obrigatórios estão presentes
@@ -75,12 +75,12 @@ export default class PacienteController {
       return response.status(201).json({
         message: 'Paciente cadastrado com sucesso',
         user: {
-          cd_paciente: paciente.cd_paciente,
-          nm_paciente: paciente.nm_paciente,
+          paciente_id: paciente.paciente_id,
+          paciente_name: paciente.paciente_name,
           email: paciente.email,
           cpf: paciente.cpf,
-          nm_tipo_sanguineo: paciente.nm_tipo_sanguineo,
-          cd_telefone: paciente.cd_telefone,
+          tipo_sanguineo: paciente.tipo_sanguineo,
+          telefone: paciente.telefone,
         }
       })
     } catch (error) {
@@ -98,16 +98,16 @@ export default class PacienteController {
       
       // Campos que podem ser atualizados
       const updateFields = [
-        'nm_paciente',
-        'cd_telefone',
-        'nm_convenio',
-        'nm_alergia',
-        'nm_aparelho',
-        'nm_medicamentos',
-        'tx_info_adicional',
-        'nm_doenca',
-        'cd_telefone_ctt_emergencia',
-        'nm_ctt_emergencia'
+        'paciente_id',
+        'telefone',
+        'convenio',
+        'alergia',
+        'aparelho',
+        'medicamentos',
+        'info_adicional',
+        'doencas',
+        'telefone_ctt_emergencia',
+        'ctt_emergencia_name'
       ]
 
       // Obter apenas os campos que foram enviados na requisição
@@ -182,15 +182,15 @@ export default class PacienteController {
       
       // Campos médicos que podem ser atualizados
       const medicalFields = [
-        'nm_convenio',
-        'nm_alergia',
-        'nm_aparelho',
-        'nm_medicamentos',
-        'tx_info_adicional',
-        'nm_doenca',
-        'cd_telefone_ctt_emergencia',
-        'nm_ctt_emergencia',
-        'cd_medico'
+        'convenio',
+        'alergia',
+        'aparelho',
+        'medicamentos',
+        'info_adicional',
+        'doencas',
+        'telefone_ctt_emergencia',
+        'ctt_emergencia_name',
+        'tipo_sanguineo'
       ]
 
       // Obter apenas os campos que foram enviados na requisição
