@@ -1,15 +1,16 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
-
 export default class Paciente extends BaseModel {
   public static table = 'pacientes'
+
+  public static primaryKey = 'pacienteId'
 
   @column({ isPrimary: true })
   declare paciente_id: number
 
   // Campos obrigatórios
   @column()
-  declare paciente_template: string
+  declare dy50_id: number | null
 
   @column()
   declare paciente_name: string
@@ -24,13 +25,13 @@ export default class Paciente extends BaseModel {
   declare sexo: string
 
   @column()
-  declare tipo_sanguineo: string
+  declare tipoSanguineo: string
 
   @column()
   declare telefone: string
 
   @column()
-  declare dt_nascimento: string
+  declare dtNascimento: string
 
   @column({ serializeAs: null })
   declare password: string
