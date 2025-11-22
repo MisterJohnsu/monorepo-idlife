@@ -41,7 +41,7 @@
     "@japa/plugin-adonisjs": "^4.0.0",
     "@japa/runner": "^4.2.0",
     "@swc/core": "1.11.24",
-    "@types/luxon": "^3.6.2",
+    "@types/luxon": "^3.7.1",
     "@types/node": "^22.15.18",
     "eslint": "^9.26.0",
     "hot-hook": "^0.4.0",
@@ -51,14 +51,14 @@
     "typescript": "^5.6.2"
   },
   "dependencies": {
-    "@adonisjs/auth": "^9.4.0",
+    "@adonisjs/auth": "^9.5.1",
     "@adonisjs/core": "^6.18.0",
     "@adonisjs/cors": "^2.2.1",
     "@adonisjs/lucid": "^21.6.1",
     "@vinejs/vine": "^3.0.1",
     "better-sqlite3": "^11.10.0",
     "i": "^0.3.7",
-    "luxon": "^3.6.1",
+    "luxon": "^3.7.2",
     "next-auth": "^4.24.11",
     "reflect-metadata": "^0.2.2",
     "sqlite3": "^5.1.7"

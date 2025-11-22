@@ -1,32 +1,26 @@
 import router from '@adonisjs/core/services/router'
 
-const PacientesController = () => import('#controllers/pacientes_controller')
-const MedicosController = () => import('#controllers/medicos_controller')
-const ConsultasController = () => import('#controllers/consultas_controller')
+const PacienteController = () => import('#controllers/Http/pacientes_controller')
+const SensorController = () => import('#controllers/Http/biometria_controller')
 
-router
-  .group(() => {
-    router.post('/register', [PacientesController, 'create'])
-    router.put('/:cpf', [PacientesController, 'update'])
-    router.get('/:cpf', [PacientesController, 'show'])
-    router.delete('/:cpf', [PacientesController, 'destroy'])
-  })
-  .prefix('pacientes')
+router.group(() => {
 
-router
-  .group(() => {
-    router.post('/register', [MedicosController, 'create'])
-    router.get('/:crm', [MedicosController, 'show'])
-    router.put('/:crm', [MedicosController, 'update'])
-    router.delete('/:crm', [MedicosController, 'destroy'])
+  router.get('/', async () => {
+    return { status: 'API Online', version: '1.0' }
   })
-  .prefix('medicos')
 
-router
-  .group(() => {
-    router.post('/register', [ConsultasController, 'create'])
-    router.post('/show', [ConsultasController, 'show'])
-    router.put('/:consulta_id', [ConsultasController, 'update'])
-    router.delete('/:consulta_id', [ConsultasController, 'destroy'])
-  })
-  .prefix('consultas')
+  router.post('/leitura-sensor', [SensorController, 'handleLeitura'])
+
+  router.group(() => {
+    
+    router.post('/register', [PacienteController, 'create'])
+    router.post('/register/biometric', [PacienteController, 'createWithBiometric'])
+    router.put('/:id', [PacienteController, 'update'])
+    router.delete('/:id', [PacienteController, 'destroy'])
+    router.get('/:id', [PacienteController, 'show'])
+    
+    router.post('/:id/digital', [PacienteController, 'linkFingerprint'])
+
+  }).prefix('pacientes')
+
+}).prefix('api')
