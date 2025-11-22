@@ -1,5 +1,5 @@
-// Este serviço cuida especificamente das regras de negócio do Paciente
 import Paciente from '#models/paciente' // Ou Paciente, dependendo do seu Model
+import Ws from './Ws.ts'
 
 interface CreatePacienteDTO {
     pacienteName: string
@@ -18,24 +18,32 @@ interface CreatePacienteDTO {
     doencas?: string
     telefone_ctt_emergencia?: string
     ctt_emergencia_name?: string
-    dy50Id?: number | null
+    biometricId?: number
 }
 
-export default class PacienteService {
+export class PacientService {
 
-    public async create(data: CreatePacienteDTO, biometric?: boolean) {
+    public async create(data: CreatePacienteDTO, registerBiometric?: string | null) {
         try {
-            if (biometric) {
+            if (registerBiometric) {
+
+                const socket = Ws.io
+
+                const cpf = await socket?.emit('consultCpf')
                 
-            }
-            
-            const paciente = await Paciente.create({ ...data })
+                if (!cpf) {
+                    throw new Error('CPF não encontrado ou ws não conectado.')
+                }
+                const pacient = await Paciente.findByOrFail('cpf', cpf)
+                
+                pacient.merge({ dy50_id: data.biometricId })
+                await pacient.save()
 
-            if (!paciente) {
-                throw new Error('Falha ao criar paciente')
+                return pacient
             }
 
-            return 'Paciente criado com sucesso'
+            const pacient = await Paciente.create({ ...data })
+            return pacient
         } catch (error) {
             throw error
         }
