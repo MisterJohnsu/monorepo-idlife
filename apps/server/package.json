@@ -61,6 +61,7 @@
     "luxon": "^3.7.2",
     "next-auth": "^4.24.11",
     "reflect-metadata": "^0.2.2",
+    "socket.io": "^4.8.1",
     "sqlite3": "^5.1.7"
   },
   "hotHook": {

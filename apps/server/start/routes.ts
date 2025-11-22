@@ -19,7 +19,6 @@ router.group(() => {
     router.delete('/:id', [PacienteController, 'destroy'])
     router.get('/:id', [PacienteController, 'show'])
     
-    router.post('/:id/digital', [PacienteController, 'linkFingerprint'])
 
   }).prefix('pacientes')
 

@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import PacienteService from '#services/pacientes_service'
 import Paciente from '#models/paciente'
+import Ws from '#services/websocket_service'
 
 export default class PacienteController {
   
@@ -90,14 +91,17 @@ export default class PacienteController {
   public async createWithBiometric({ request, response }: HttpContext) {
     try {
       const { data } = request.all()
-      const paciente = await this.service.create(data, true)
+      const updatedPaciente = await this.service.create(data, true)
 
       return response.created({
         message: 'Paciente com biometria cadastrado com sucesso',
-        paciente
+        updatedPaciente
       })
     } catch (error) {
-
+      return response.badRequest({ 
+        error: 'Erro ao cadastrar paciente com biometria', 
+        details: error.message 
+      })
     }
   }
 

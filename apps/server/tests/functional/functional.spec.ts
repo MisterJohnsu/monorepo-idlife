@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import Paciente from '#models/paciente'
+import Ws from '#services/websocket_service'
 
 test.group('functional', (group) => {
 
@@ -8,6 +9,7 @@ test.group('functional', (group) => {
     await Paciente.query().where('email', 'teste.japa@email.com').delete()
     await Paciente.query().where('email', 'digital.teste@email.com').delete()
     await Paciente.query().where('email', 'update.teste@email.com').delete()
+    await Ws.boot()
   })
 
   /**
@@ -41,7 +43,7 @@ test.group('functional', (group) => {
   test('deve cadastrar a digital ao paciente criado', async ({ client, assert }) => {
     // 1. Cria paciente
     const paciente = await Paciente.create({
-      pacienteName: 'Paciente Digital',
+      paciente_name: 'Paciente Digital',
       email: 'digital.teste@email.com',
       cpf: '99988877766',
       password: '123',
@@ -58,7 +60,7 @@ test.group('functional', (group) => {
 
     // 2. Chama Rota
     const response = await client
-      .post(`/api/pacientes/${paciente.pacienteId}/digital`)
+      .post(`/api/pacientes/${paciente.paciente_id}/digital`)
       .json(payload)
 
     // 3. Assert (CORRIGIDO PARA 201)
@@ -66,7 +68,7 @@ test.group('functional', (group) => {
     response.assertBodyContains({ message: 'Registro digital do paciente vinculado com sucesso' })
 
     await paciente.refresh()
-    assert.equal(paciente.dy50Id, 100)
+    assert.equal(paciente.dy50_id, 100)
   }).skip()
 
   /**
@@ -74,7 +76,7 @@ test.group('functional', (group) => {
    */
   test('deve atualizar as informações do paciente', async ({ client, assert }) => {
     const paciente = await Paciente.create({
-      pacienteName: 'Paciente Update',
+      paciente_name: 'Paciente Update',
       email: 'update.teste@email.com',
       cpf: '88877766655',
       password: '123',
@@ -92,7 +94,7 @@ test.group('functional', (group) => {
     }
 
     const response = await client
-      .put(`/api/pacientes/${paciente.pacienteId}`)
+      .put(`/api/pacientes/${paciente.paciente_id}`)
       .json(payload)
 
     response.assertStatus(200)
