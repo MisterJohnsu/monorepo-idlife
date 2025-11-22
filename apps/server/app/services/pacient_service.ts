@@ -1,4 +1,4 @@
-import Paciente from '#models/paciente' // Ou Paciente, dependendo do seu Model
+import Paciente from '#models/paciente'
 import Ws from './Ws.ts'
 
 interface CreatePacienteDTO {
@@ -26,16 +26,15 @@ export class PacientService {
     public async create(data: CreatePacienteDTO, registerBiometric?: string | null) {
         try {
             if (registerBiometric) {
-
                 const socket = Ws.io
 
                 const cpf = await socket?.emit('consultCpf')
-                
+
                 if (!cpf) {
                     throw new Error('CPF não encontrado ou ws não conectado.')
                 }
                 const pacient = await Paciente.findByOrFail('cpf', cpf)
-                
+
                 pacient.merge({ dy50_id: data.biometricId })
                 await pacient.save()
 
