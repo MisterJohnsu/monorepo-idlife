@@ -7,7 +7,6 @@ export default class DoctorController{
 
     public async patientCreate({ request, response }: HttpContext) {
         try {
-            console.log('Chegou na doctor_controller')
             const { data } = request.all()
 
             if( data.biometricId ) {
