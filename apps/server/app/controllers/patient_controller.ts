@@ -1,8 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { PatientService } from '#services/patient_sevice'
-import Paciente from '#models/patient'
+import Patient from '#models/patient'
 
-export default class PacienteController {
+export default class PatientController {
   
   private PatientService = new PatientService()
   
@@ -15,7 +15,7 @@ export default class PacienteController {
    */
   public async show({ params, response }: HttpContext) {
     try {
-      const patient = await Paciente.findOrFail(params.id)
+      const patient = await Patient.findOrFail(params.id)
       return response.ok(patient)
     } catch {
       return response.notFound({ error: 'Paciente não encontrado' })
