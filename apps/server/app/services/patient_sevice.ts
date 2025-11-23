@@ -1,30 +1,9 @@
 import Patient from '#models/patient'
 import Ws from './Ws.ts'
 
-interface CreatepatientDTO {
-    patientName: string
-    email: string
-    cpf: string
-    password: string
-    phone: string
-    birthDate: Date
-    sex: string
-    bloodType: string
-    adress?: string
-    insurance?: string
-    alergies?: string
-    medicalDevices?: string
-    medication?: string
-    aditionalInfo?: string
-    diseases?: string
-    emergencyPhone?: string
-    emergencyName?: string
-    biometricId?: number
-}
-
 export class PatientService {
 
-    public async create(data: CreatepatientDTO, registerBiometric?: string | null) {
+    public async create(data: any, registerBiometric?: string | null) {
         try {
             if (registerBiometric) {
                 const socket = Ws.io
@@ -42,7 +21,9 @@ export class PatientService {
                 return patient
             }
 
-            const patient = await Patient.create({ ...data })
+
+            const patient = await Patient.create({ ...data, address: { city: data.city, state: data.state, street: data.address } })
+            // const patient = await Patient.create({ ...data })
             return patient
         } catch (error) {
             throw error
