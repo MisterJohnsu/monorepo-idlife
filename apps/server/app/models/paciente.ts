@@ -22,7 +22,7 @@ export default class Paciente extends BaseModel {
   declare cpf: string
 
   @column()
-  declare sexo: string
+  declare gender: string
 
   @column()
   declare tipoSanguineo: string
