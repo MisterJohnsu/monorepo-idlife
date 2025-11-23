@@ -15,7 +15,7 @@ export default class Consulta extends BaseModel {
     declare dtConsulta: DateTime
     
     @column()
-    declare observacoes?: string
+    declare observations?: string
 
     @column.dateTime({ autoCreate: true, columnName: 'created_at', serializeAs: 'created_at' })
   declare created_at: DateTime

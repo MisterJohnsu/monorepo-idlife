@@ -33,6 +33,9 @@ export default class Patient extends BaseModel {
   @column()
   declare birthDate: Date
 
+  @column()
+  declare adress: string
+
   @column({ serializeAs: null })
   declare password: string
 

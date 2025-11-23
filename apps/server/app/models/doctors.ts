@@ -9,7 +9,7 @@ export default class Doctor extends BaseModel {
     declare doctorId: number
 
     @column()
-    declare isAdmin: boolean
+    declare position: string
 
     @column()
     declare crm: string

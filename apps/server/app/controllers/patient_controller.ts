@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { PatientService } from '#services/patient_sevice'
 import Patient from '#models/patient'
 
-export default class PatienttController {
+export default class PatientController {
   
   private PatientService = new PatientService()
   

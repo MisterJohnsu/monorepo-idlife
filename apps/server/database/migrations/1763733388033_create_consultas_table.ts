@@ -27,7 +27,7 @@ export default class extends BaseSchema {
 
       // Dados da consulta
       table.date('dtConsulta').notNullable()
-      table.string('observacoes').nullable()
+      table.string('observations').nullable()
 
       table.timestamps(true, true)
     })
