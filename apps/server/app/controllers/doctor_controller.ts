@@ -1,11 +1,11 @@
-import { PatientService } from '#services/patient_service'
+import { PatientService } from '#services/patient_sevice'
 import type { HttpContext } from '@adonisjs/core/http'
 
-export class DoctorController{
+export default class DoctorController{
 
     private patientService = new PatientService()
 
-    public async pacientCreate({ request, response }: HttpContext) {
+    public async patientCreate({ request, response }: HttpContext) {
         try {
             const { data } = request.all()
 
@@ -31,7 +31,7 @@ export class DoctorController{
         }
     }
 
-    public async pacientUpdate({ params, request, response }: HttpContext) {
+    public async patientUpdate({ params, request, response }: HttpContext) {
         try {
             const { dados } = request.all()
             const updatedPaciente = await this.patientService.update(params.id, dados)
@@ -43,6 +43,35 @@ export class DoctorController{
         } catch (error) {
             return response.badRequest({ 
               error: 'Erro ao atualizar paciente', 
+              details: error.message 
+            })
+        }
+    }
+
+    public async patientDelete({ params, response }: HttpContext) {
+        try {
+            await this.patientService.delete(params.id)
+
+            return response.ok({
+                message: 'Paciente deletado com sucesso'
+            })
+        } catch (error) {
+            return response.badRequest({ 
+              error: 'Erro ao deletar paciente', 
+              details: error.message 
+            })
+        }
+    }
+
+    public async patientShow({ params, response }: HttpContext) {
+        try {
+            const patient = await this.patientService.show(params.id)
+            return response.ok({
+                patient
+            })
+        } catch (error) {
+            return response.badRequest({ 
+              error: 'Erro ao buscar paciente', 
               details: error.message 
             })
         }

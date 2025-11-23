@@ -20,8 +20,18 @@ const formSchema = z.object({
   city: z.string().min(2, "Cidade inválida"),
   email: z.string().email("Email inválido"),
   state: z.enum(["SP", "RJ", "MG", "BA", "RS", "PR", "PE", "CE", "PA", "SC"]),
-  gender: z.enum(["M", "F"]),
-  bloodType: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]),
+  gender: z.enum(["M", "F", "Outro"]),
+  bloodType: z.enum([
+    "A+",
+    "A-",
+    "B+",
+    "B-",
+    "AB+",
+    "AB-",
+    "O+",
+    "O-",
+    "Outro",
+  ]),
   emergencyPhone: z.string().min(10),
   emergencyName: z.string().min(2),
   medicalDevices: z.string(),
@@ -29,6 +39,7 @@ const formSchema = z.object({
   allergies: z.string(),
   additionalInfo: z.string(),
   medications: z.string(),
+  desiases: z.string(),
 });
 
 type RegistrationPatientData = z.infer<typeof formSchema>;
@@ -38,7 +49,10 @@ interface RegisterPatientProps {
   patientName: (name: string) => void;
 }
 
-export function RegisterPatient({ onSuccess, patientName }: RegisterPatientProps) {
+export function RegisterPatient({
+  onSuccess,
+  patientName,
+}: RegisterPatientProps) {
   const {
     register,
     handleSubmit,
@@ -64,13 +78,14 @@ export function RegisterPatient({ onSuccess, patientName }: RegisterPatientProps
       allergies: "",
       additionalInfo: "",
       medications: "",
+      desiases: "",
     },
   });
   const handleFormSubmit = async (data: RegistrationPatientData) => {
     try {
-      await api.post('api/patients/register', data)
+      await api.post("api/patients/register", { data });
       onSuccess(true);
-      patientName(data.patientName)
+      patientName(data.patientName);
       return;
     } catch (error) {
       console.error("Erro ao enviar o formulário:", error);
@@ -137,7 +152,7 @@ export function RegisterPatient({ onSuccess, patientName }: RegisterPatientProps
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Sexo *
+                  Gênero *
                 </label>
                 <select
                   id="state"
@@ -146,6 +161,7 @@ export function RegisterPatient({ onSuccess, patientName }: RegisterPatientProps
                 >
                   <option value="M">Masculino</option>
                   <option value="F">Feminino</option>
+                  <option value="Outro">Outro</option>
                 </select>
               </div>
             </div>
@@ -274,6 +290,7 @@ export function RegisterPatient({ onSuccess, patientName }: RegisterPatientProps
                   <option value="AB-">AB-</option>
                   <option value="O+">O+</option>
                   <option value="O-">O-</option>
+                  <option value="Outro">Não sei informar</option>
                 </select>
               </div>
             </div>
@@ -305,6 +322,20 @@ export function RegisterPatient({ onSuccess, patientName }: RegisterPatientProps
                 />
               </div>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Doenças Crônicas
+              </label>
+              <Input
+                type="text"
+                id="desiases"
+                placeholder="Ex: Diabetes, Hipertensão, etc."
+                className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                {...register("desiases")}
+              />
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Aparelhos Médicos Utilizados

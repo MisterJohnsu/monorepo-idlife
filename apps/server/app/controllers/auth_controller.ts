@@ -1,26 +1,26 @@
 import { HttpContext } from '@adonisjs/core/http'
 import hash from '@adonisjs/core/services/hash'
-import Paciente from '#models/paciente'
-import Medico from '#models/socorrista'
+import Patient from '#models/patient'
+import Doctor from '#models/doctors'
 import encryption from '@adonisjs/core/services/encryption'
 
 export default class AuthController {
   // Login do Paciente
-  public async loginPaciente({ request, response }: HttpContext) {
+  public async loginPatient({ request, response }: HttpContext) {
     try {
       const { email, password } = request.only(['email', 'password'])
 
       // Buscar paciente por email
-      const paciente = await Paciente.findBy('email', email)
+      const patient = await Patient.findBy('email', email)
 
-      if (!paciente) {
+      if (!patient) {
         return response.status(401).json({
           error: 'Credenciais inválidas'
         })
       }
 
       // Verificar password
-      const isValidpassword = await hash.verify(paciente.password, password)
+      const isValidpassword = await hash.verify(patient.password, password)
 
       if (!isValidpassword) {
         return response.status(401).json({
@@ -30,8 +30,8 @@ export default class AuthController {
 
       // Gerar token
       const tokenPayload = {
-        id: paciente.paciente_id,
-        email: paciente.email,
+        patientId: patient.patientId,
+        email: patient.email,
         type: 'patient',
         timestamp: Date.now()
       }
@@ -39,9 +39,9 @@ export default class AuthController {
 
       return response.json({
         user: {
-          paciente_id: paciente.paciente_id,
-          email: paciente.email,
-          nm_paciente: paciente.paciente_name,
+          patientId: patient.patientId,
+          email: patient.email,
+          patientName: patient.patientName,
         },
         token: token
       })
@@ -59,16 +59,16 @@ export default class AuthController {
       const { email, password } = request.only(['email', 'password'])
 
       // Buscar médico por email
-      const medico = await Medico.findBy('email', email)
+      const doctor = await Doctor.findBy('email', email)
 
-      if (!medico) {
+      if (!doctor) {
         return response.status(401).json({
           error: 'Credenciais inválidas'
         })
       }
 
       // Verificar password
-      const isValidpassword = await hash.verify(medico.password, password)
+      const isValidpassword = await hash.verify(doctor.password, password)
 
       if (!isValidpassword) {
         return response.status(401).json({
@@ -78,8 +78,8 @@ export default class AuthController {
 
       // Gerar token
       const tokenPayload = {
-        id: medico.medico_id,
-        email: medico.email,
+        id: doctor.doctorId,
+        email: doctor.email,
         type: 'doctor',
         timestamp: Date.now()
       }
@@ -87,11 +87,11 @@ export default class AuthController {
 
       return response.json({
         user: {
-          medico_id: medico.medico_id,
-          email: medico.email,
-          medico_name: medico.medico_name,
-          crm: medico.crm,
-          nm_especializacao: medico.especializacao,
+          doctorId: doctor.doctorId,
+          email: doctor.email,
+          doctorName: doctor.doctorName,
+          crm: doctor.crm,
+          specialty: doctor.specialty,
         },
         token: token
       })
@@ -102,7 +102,6 @@ export default class AuthController {
       })
     }
   }
-
   // Método para validar token (útil para middleware)
   public async validateToken({ request, response }: HttpContext) {
     try {

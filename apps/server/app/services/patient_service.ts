@@ -1,4 +1,4 @@
-import Paciente from '#models/paciente'
+import Patient from '#models/patient'
 import Ws from './Ws.ts'
 
 interface CreatePatientDTO {
@@ -33,7 +33,7 @@ export class PatientService {
                 if (!cpf) {
                     throw new Error('CPF não encontrado ou ws não conectado.')
                 }
-                const patient = await Paciente.findByOrFail('cpf', cpf)
+                const patient = await Patient.findByOrFail('cpf', cpf)
 
                 patient.merge({ dy50_id: data.biometricId })
                 await patient.save()
@@ -41,20 +41,20 @@ export class PatientService {
                 return patient
             }
 
-            const patient = await Paciente.create({ ...data })
+            const patient = await Patient.create({ ...data })
             return patient
         } catch (error) {
             throw error
         }
     }
 
-    public async update(id: number, dados: Partial<Paciente>) {
+    public async update(id: number, dados: Partial<Patient>) {
         try {
-            const paciente = await Paciente.findOrFail(id)
-            paciente.merge(dados)
-            await paciente.save()
-            console.log(`[PacienteService] Sucesso: Paciente ${paciente.paciente_name} atualizado.`)
-            return paciente
+            const patient = await Patient.findOrFail(id)
+            patient.merge(dados)
+            await patient.save()
+            console.log(`[PacienteService] Sucesso: Paciente ${patient.patientName} atualizado.`)
+            return patient
         } catch (error) {
             console.error('[PacienteService] Erro ao atualizar paciente:', error)
             throw error // Repassa o erro para quem chamou
@@ -63,8 +63,8 @@ export class PatientService {
 
     public async show(id: number) {
         try {
-            const paciente = await Paciente.findOrFail(id)
-            return paciente
+            const patient = await Patient.findOrFail(id)
+            return patient
         } catch (error) {
             console.error('[PacienteService] Erro ao buscar paciente:', error)
             throw error // Repassa o erro para quem chamou
@@ -73,8 +73,8 @@ export class PatientService {
 
     public async delete(id: number) {
         try {
-            const paciente = await Paciente.findOrFail(id)
-            await paciente.delete()
+            const patient = await Patient.findOrFail(id)
+            await patient.delete()
             console.log(`[PacienteService] Sucesso: Paciente ID ${id} deletado.`)
             return true
         } catch (error) {
