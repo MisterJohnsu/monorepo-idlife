@@ -14,7 +14,7 @@ export default function DoctorDashboard() {
       
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-blue-900 mb-2">Sistema Médico</h1>
+          <h1 className="text-4xl font-bold text-blue-900 mb-2">Portal do Médico</h1>
           <p className="text-blue-600 mb-6">Gerenciamento de fichas de pacientes</p>
 
           <div className="flex gap-3 flex-wrap">

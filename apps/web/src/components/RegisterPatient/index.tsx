@@ -17,6 +17,7 @@ const formSchema = z.object({
   city: z.string().min(2, "Cidade inválida"),
   email: z.string().email("Email inválido"),
   state: z.enum(["SP", "RJ", "MG", "BA", "RS", "PR", "PE", "CE", "PA", "SC"]),
+  sexo: z.enum(["M", "F"]),
 });
 
 type RegistrationPatientData = z.infer<typeof formSchema>;
@@ -57,7 +58,6 @@ export function RegisterPatient({ onSuccess }: RegisterPatientProps) {
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           <fieldset className="space-y-4">
             <legend className="text-lg font-semibold text-gray-900 mb-4">Informações Pessoais</legend>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Nome Completo *</label>
               <Input
@@ -90,6 +90,17 @@ export function RegisterPatient({ onSuccess }: RegisterPatientProps) {
                   className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   {...register("birthDate")}
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Sexo *</label>
+                <select
+                  id="state"
+                  {...register("sexo")}
+                  className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="M">Masculino</option>
+                  <option value="F">Feminino</option>
+                </select>
               </div>
             </div>
           </fieldset>
