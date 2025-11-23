@@ -84,11 +84,13 @@ export function SearchPatients() {
         patient.cpf.includes(searchTerm.replace(/\D/g, "")),
     )
 
+    console.log('results ===> ', results)
     setSearchResults(results)
     setSelectedPatient(null)
   }
 
   const handleSelectPatient = (patient: Patient) => {
+    console.log("Paciente selecionado:", patient)
     setSelectedPatient(patient)
   }
 
