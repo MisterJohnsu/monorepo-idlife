@@ -15,6 +15,7 @@ export default class extends BaseSchema {
       table.string('password').notNullable()
       table.string('phone', 15).notNullable()
       table.date('bithDate').notNullable()
+      table.string('adress').notNullable()
       
       // Biometria (Nullable para permitir cadastro antes da digital)
       table.integer('dy50_id').nullable().unique() 
