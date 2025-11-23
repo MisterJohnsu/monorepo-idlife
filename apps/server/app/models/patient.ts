@@ -33,13 +33,14 @@ export default class Patient extends BaseModel {
   @column()
   declare birthDate: Date
 
-  @column()
-  declare adress: string
-
+  
   @column({ serializeAs: null })
   declare password: string
-
+  
   // Campos opcionais
+  @column()
+  declare address: { street: string, city: string, state: string }
+
   @column()
   declare insurance?: string | null
 
@@ -50,10 +51,10 @@ export default class Patient extends BaseModel {
   declare medicalDevices?: string | null
 
   @column()
-  declare medication?: string | null
+  declare medications?: string | null
 
   @column()
-  declare aditionalInfo?: string | null
+  declare additionalInfo?: string | null
 
   @column()
   declare diseases?: string | null

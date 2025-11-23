@@ -20,8 +20,18 @@ const formSchema = z.object({
   city: z.string().min(2, "Cidade inválida"),
   email: z.string().email("Email inválido"),
   state: z.enum(["SP", "RJ", "MG", "BA", "RS", "PR", "PE", "CE", "PA", "SC"]),
-  gender: z.enum(["M", "F"]),
-  bloodType: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]),
+  gender: z.enum(["M", "F", "Outro"]),
+  bloodType: z.enum([
+    "A+",
+    "A-",
+    "B+",
+    "B-",
+    "AB+",
+    "AB-",
+    "O+",
+    "O-",
+    "Outro",
+  ]),
   emergencyPhone: z.string().min(10),
   emergencyName: z.string().min(2),
   medicalDevices: z.string(),
@@ -50,20 +60,20 @@ export function RegisterPatient({
   } = useForm<RegistrationPatientData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      patientName: "",
-      cpf: "",
+      patientName: "Joao",
+      cpf: "53455823456",
       birthDate: "",
-      phone: "",
-      email: "",
-      address: "",
-      city: "",
+      phone: "13999999999",
+      email: "example@gmail.com",
+      address: "casa do krl",
+      city: "sao vicente",
       state: "SP",
       gender: "M",
       bloodType: "A+",
-      emergencyPhone: "",
-      emergencyName: "",
-      medicalDevices: "",
-      insurance: "",
+      emergencyPhone: "15999999999",
+      emergencyName: "Pai",
+      medicalDevices: "marcapasso",
+      insurance: "unimed",
       allergies: "",
       additionalInfo: "",
       medications: "",
@@ -71,7 +81,7 @@ export function RegisterPatient({
   });
   const handleFormSubmit = async (data: RegistrationPatientData) => {
     try {
-      await api.post("api/patients/register", data);
+      await api.post("api/patients/register", { data });
       onSuccess(true);
       patientName(data.patientName);
       return;
@@ -149,6 +159,7 @@ export function RegisterPatient({
                 >
                   <option value="M">Masculino</option>
                   <option value="F">Feminino</option>
+                  <option value="Outro">Outro</option>
                 </select>
               </div>
             </div>
@@ -277,6 +288,7 @@ export function RegisterPatient({
                   <option value="AB-">AB-</option>
                   <option value="O+">O+</option>
                   <option value="O-">O-</option>
+                  <option value="Outro">Não sei informar</option>
                 </select>
               </div>
             </div>

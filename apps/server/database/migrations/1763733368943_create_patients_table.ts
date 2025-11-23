@@ -15,7 +15,7 @@ export default class extends BaseSchema {
       table.string('password').notNullable()
       table.string('phone', 15).notNullable()
       table.date('bithDate').notNullable()
-      table.json('adress').notNullable()
+      table.json('address').notNullable()
       
       // Biometria (Nullable para permitir cadastro antes da digital)
       table.integer('dy50_id').nullable().unique() 
@@ -25,11 +25,11 @@ export default class extends BaseSchema {
       table.string('bloodType').notNullable()
       table.string('emergencyPhone', 15).nullable()
       table.string('emergencyName').nullable()
-      table.string('aditionalInfo').nullable()
+      table.string('additionalInfo').nullable()
       table.string('insurance').nullable()
       table.string('allergies').nullable()
       table.string('medicalDevices').nullable()
-      table.string('medication').nullable()
+      table.string('medications').nullable()
       table.string('diseases').nullable()
 
       table.timestamps(true, true)
