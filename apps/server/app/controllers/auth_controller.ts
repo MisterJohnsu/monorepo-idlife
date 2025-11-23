@@ -1,6 +1,6 @@
 import { HttpContext } from '@adonisjs/core/http'
 import hash from '@adonisjs/core/services/hash'
-import Paciente from '#models/paciente'
+import Paciente from '#models/patient'
 import Medico from '#models/socorrista'
 import encryption from '@adonisjs/core/services/encryption'
 

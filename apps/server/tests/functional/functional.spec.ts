@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import Paciente from '#models/paciente'
+import Paciente from '#models/patient'
 import Ws from '#services/websocket_service'
 
 test.group('functional', (group) => {

@@ -1,21 +1,25 @@
-"use client"
+"use client";
 
-import { RegisterPatient } from "@/components/RegisterPatient"
-import { SearchPatients } from "@/components/SearchPatients"
-import { Button } from "@/components/ui/button"
-import { Plus, Search } from "lucide-react"
-import { useState } from "react"
+import { RegisterPatient } from "@/components/RegisterPatient";
+import { SearchPatients } from "@/components/SearchPatients";
+import { Button } from "@/components/ui/button";
+import { Plus, Search } from "lucide-react";
+import { useState } from "react";
 
 export default function Page() {
-  const [view, setView] = useState<"search" | "register">("search")
+  const [view, setView] = useState<"search" | "register">("search");
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-8 px-4">
+    <main className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Cabeçalho com Navegação */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-blue-900 mb-2">Sistema Médico</h1>
-          <p className="text-blue-600 mb-6">Gerenciamento de fichas de pacientes</p>
+          <h1 className="text-4xl font-bold text-blue-900 mb-2">
+            Sistema Médico
+          </h1>
+          <p className="text-blue-600 mb-6">
+            Gerenciamento de fichas de pacientes
+          </p>
 
           <div className="flex gap-3 flex-wrap">
             <Button
@@ -47,5 +51,5 @@ export default function Page() {
         {view === "search" ? <SearchPatients /> : <RegisterPatient />}
       </div>
     </main>
-  )
+  );
 }

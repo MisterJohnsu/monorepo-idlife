@@ -1,10 +1,10 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { PacientService } from '#services/pacient_service'
-import Paciente from '#models/paciente'
+import { PatientService } from '#services/patient_sevice'
+import Paciente from '#models/patient'
 
 export default class PacienteController {
   
-  private pacientService = new PacientService()
+  private PatientService = new PatientService()
   
   /**
    * Retorna um paciente por seu ID
@@ -15,8 +15,8 @@ export default class PacienteController {
    */
   public async show({ params, response }: HttpContext) {
     try {
-      const paciente = await Paciente.findOrFail(params.id)
-      return response.ok(paciente)
+      const patient = await Paciente.findOrFail(params.id)
+      return response.ok(patient)
     } catch {
       return response.notFound({ error: 'Paciente não encontrado' })
     }
@@ -77,7 +77,7 @@ export default class PacienteController {
         }
       })
 
-      const paciente = await this.service.update(params.id, data)
+      const paciente = await this.PatientService.update(params.id, data)
 
       return response.ok({
         message: 'Paciente atualizado com sucesso',
@@ -97,7 +97,7 @@ export default class PacienteController {
    */
   public async destroy({ params, response }: HttpContext) {
     try {
-      await this.service.delete(params.id)
+      await this.PatientService.delete(params.id)
       return response.ok({ message: 'Paciente removido com sucesso' })
     } catch (error) {
       return response.notFound({ error: 'Paciente não encontrado' })
