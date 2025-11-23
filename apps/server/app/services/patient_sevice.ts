@@ -10,6 +10,7 @@ interface CreatepatientDTO {
     birthDate: Date
     sex: string
     bloodType: string
+    adress?: string
     insurance?: string
     alergies?: string
     medicalDevices?: string

@@ -8,7 +8,7 @@ export default class Doctors extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('doctorId').primary().unique()
       
-      table.boolean('isAdmin').notNullable().defaultTo(false)
+      table.string('position').notNullable()
       table.string('crm').notNullable().unique()
       table.string('doctorName').notNullable()
       table.string('email').notNullable().unique()
