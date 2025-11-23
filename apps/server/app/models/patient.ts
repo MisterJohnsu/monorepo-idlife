@@ -1,19 +1,19 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
-export default class Paciente extends BaseModel {
+export default class Patient extends BaseModel {
   public static table = 'pacientes'
 
   public static primaryKey = 'pacienteId'
 
   @column({ isPrimary: true })
-  declare paciente_id: number
+  declare patientId: number
 
   // Campos obrigatórios
   @column()
   declare dy50_id: number | null
 
   @column()
-  declare paciente_name: string
+  declare patientName: string
 
   @column()
   declare email: string
@@ -22,44 +22,44 @@ export default class Paciente extends BaseModel {
   declare cpf: string
 
   @column()
-  declare sexo: string
+  declare sex: string
 
   @column()
-  declare tipoSanguineo: string
+  declare bloodType: string
 
   @column()
-  declare telefone: string
+  declare phone: string
 
   @column()
-  declare dtNascimento: string
+  declare birthDate: Date
 
   @column({ serializeAs: null })
   declare password: string
 
   // Campos opcionais
   @column()
-  declare convenio?: string | null
+  declare insurance?: string | null
 
   @column()
-  declare alergia?: string | null
+  declare alergies?: string | null
 
   @column()
-  declare aparelho?: string | null
+  declare medicalDevices?: string | null
 
   @column()
-  declare medicamentos?: string | null
+  declare medication?: string | null
 
   @column()
-  declare info_adicional?: string | null
+  declare aditionalInfo?: string | null
 
   @column()
-  declare doencas?: string | null
+  declare diseases?: string | null
 
   @column()
-  declare telefone_ctt_emergencia?: string | null
+  declare emergencyPhone?: string | null
 
   @column()
-  declare ctt_emergencia_name?: string | null
+  declare emergencyName?: string | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
