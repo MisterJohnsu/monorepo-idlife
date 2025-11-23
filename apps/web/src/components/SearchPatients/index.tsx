@@ -70,6 +70,9 @@ export function SearchPatients() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
+    //aqui ele efetua a busca e precisa ser enviado o get para o banco de dados
+
+    
     setHasSearched(true)
 
     if (!searchTerm.trim()) {
