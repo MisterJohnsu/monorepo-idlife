@@ -1,23 +1,23 @@
-import { PacientService } from '#services/pacient_service'
+import { PatientService } from '#services/patient_service'
 import type { HttpContext } from '@adonisjs/core/http'
 
-export default class MedicController{
+export class DoctorController{
 
-    private pacientService = new PacientService()
+    private patientService = new PatientService()
 
     public async pacientCreate({ request, response }: HttpContext) {
         try {
             const { data } = request.all()
 
             if( data.biometricId ) {
-                const pacient = await this.pacientService.create(data, 'registerBiometric')
+                const pacient = await this.patientService.create(data, 'registerBiometric')
                 return response.created({
                   message: 'Biometria cadastrada com sucesso',
                   pacient
                 })
             }
 
-            const pacient = await this.pacientService.create(data)
+            const pacient = await this.patientService.create(data)
 
             return response.created({
               message: 'Paciente cadastrado com sucesso',
@@ -34,7 +34,7 @@ export default class MedicController{
     public async pacientUpdate({ params, request, response }: HttpContext) {
         try {
             const { dados } = request.all()
-            const updatedPaciente = await this.pacientService.update(params.id, dados)
+            const updatedPaciente = await this.patientService.update(params.id, dados)
 
             return response.ok({
                 message: 'Paciente atualizado com sucesso',

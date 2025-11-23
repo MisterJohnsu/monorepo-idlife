@@ -1,6 +1,6 @@
-import type { HttpContext } from '@adonisjs/core/http'
-import { PacientService } from '#services/pacient_service'
 import Paciente from '#models/paciente'
+import { PacientService } from '#services/patient_service'
+import type { HttpContext } from '@adonisjs/core/http'
 
 export default class PacienteController {
   
