@@ -3,6 +3,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { api } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -66,10 +67,15 @@ export function RegisterPatient({ onSuccess, patientName }: RegisterPatientProps
     },
   });
   const handleFormSubmit = async (data: RegistrationPatientData) => {
-    if (data) {
+    try {
+      await api.post('api/patients/register', data)
       onSuccess(true);
       patientName(data.patientName)
-      console.log("Formulário enviado com sucesso:", data);
+      return;
+    } catch (error) {
+      console.error("Erro ao enviar o formulário:", error);
+      onSuccess(false);
+      return;
     }
   };
 
