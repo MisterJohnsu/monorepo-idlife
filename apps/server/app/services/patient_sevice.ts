@@ -21,8 +21,25 @@ export class PatientService {
                 return patient
             }
 
-
-            const patient = await Patient.create({ ...data, address: { city: data.city, state: data.state, street: data.address } })
+            const dataCreatePatient = {
+                additionalInfo: data.additionalInfo,
+                address: { city: data.city, state: data.state, street: data.address },
+                allergies: data.allergies,
+                birthDate: data.birthDate,
+                bloodType: data.bloodType,
+                cpf: data.cpf,
+                email: data.email,
+                emergencyName: data.emergencyName,
+                emergencyPhone: data.emergencyPhone,
+                gender: data.gender,
+                insurance: data.insurance,
+                medicalDevices: data.medicalDevices,
+                medications: data.medications,
+                patientName: data.patientName,
+                phone: data.phone,
+            }
+            
+            const patient = await Patient.create({ ...dataCreatePatient })
             // const patient = await Patient.create({ ...data })
             return patient
         } catch (error) {
