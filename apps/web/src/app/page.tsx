@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertCircle,
   Ambulance,
@@ -11,8 +11,8 @@ import {
   Stethoscope,
   User,
   UserCog,
-} from "lucide-react"
-import Link from "next/link"
+} from "lucide-react";
+import Link from "next/link";
 
 export default function LandingPage() {
   return (
@@ -22,7 +22,10 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between max-w-7xl">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-              <Heart className="w-6 h-6 text-primary-foreground" fill="currentColor" />
+              <Heart
+                className="w-6 h-6 text-primary-foreground"
+                fill="currentColor"
+              />
             </div>
             <span className="text-xl font-bold text-foreground">IDLife</span>
           </Link>
@@ -47,7 +50,11 @@ export default function LandingPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-3">
-            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+            <Button
+              size="sm"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              asChild
+            >
               <Link href="#acesso">Acessar Sistema</Link>
             </Button>
           </div>
@@ -63,14 +70,21 @@ export default function LandingPage() {
               Identificação Médica Biométrica
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-balance leading-tight">
-              Suas informações médicas <span className="text-primary">na ponta dos dedos</span> em emergências
+              Suas informações médicas{" "}
+              <span className="text-primary">na ponta dos dedos</span> em
+              emergências
             </h1>
             <p className="text-lg text-muted-foreground text-pretty leading-relaxed">
-              A tecnologia de biometria digital que salva vidas. Tenha todas as suas informações vitais acessíveis
-              instantaneamente por socorristas autorizados através da sua digital.
+              A tecnologia de biometria digital que salva vidas. Tenha todas as
+              suas informações vitais acessíveis instantaneamente por
+              socorristas autorizados através da sua digital.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90" asChild>
+              <Button
+                size="lg"
+                className="bg-accent text-accent-foreground hover:bg-accent/90"
+                asChild
+              >
                 <Link href="#acesso">Acessar Minha Carteirinha</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
@@ -99,7 +113,9 @@ export default function LandingPage() {
                   <Fingerprint className="w-20 h-20 text-primary" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-bold">Identificação Biométrica</h3>
+                  <h3 className="text-2xl font-bold">
+                    Identificação Biométrica
+                  </h3>
                   <p className="text-sm font-medium text-muted-foreground">
                     Toque para liberar acesso ao
                     <br />
@@ -116,7 +132,9 @@ export default function LandingPage() {
       <section id="acesso" className="bg-secondary/30 py-20">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-12 space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-balance">Acesso ao Sistema</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-balance">
+              Acesso ao Sistema
+            </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
               Selecione seu perfil para entrar no IDLife
             </p>
@@ -186,7 +204,9 @@ export default function LandingPage() {
       <section id="como-funciona" className="py-20 md:py-32">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-balance">Como Funciona</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-balance">
+              Como Funciona
+            </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
               Tecnologia avançada para proteção da sua vida
             </p>
@@ -199,8 +219,8 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-bold">Cadastro Médico</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Seu médico de confiança cria seu perfil no sistema, inserindo todas as informações clínicas relevantes
-                  e histórico de saúde.
+                  Seu médico de confiança cria seu perfil no sistema, inserindo
+                  todas as informações clínicas relevantes e histórico de saúde.
                 </p>
               </CardContent>
             </Card>
@@ -211,8 +231,9 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-bold">Vínculo Biométrico</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Sua impressão digital é vinculada de forma segura ao seu prontuário, tornando-se sua chave de acesso
-                  única e intransferível.
+                  Sua impressão digital é vinculada de forma segura ao seu
+                  prontuário, tornando-se sua chave de acesso única e
+                  intransferível.
                 </p>
               </CardContent>
             </Card>
@@ -223,8 +244,8 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-bold">Identificação Imediata</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Em emergências, socorristas utilizam um leitor biométrico para identificar você e acessar dados vitais
-                  instantaneamente.
+                  Em emergências, socorristas utilizam um leitor biométrico para
+                  identificar você e acessar dados vitais instantaneamente.
                 </p>
               </CardContent>
             </Card>
@@ -237,16 +258,21 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-balance">Por que usar o IDLife?</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-balance">
+                Por que usar o IDLife?
+              </h2>
               <div className="space-y-6">
                 <div className="flex gap-4">
                   <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
                     <Clock className="w-6 h-6 text-accent" />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-xl font-bold">Sem Dependência de Dispositivos</h3>
+                    <h3 className="text-xl font-bold">
+                      Sem Dependência de Dispositivos
+                    </h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      Você não precisa carregar cartões, pulseiras ou celular. Sua digital é tudo o que você precisa.
+                      Você não precisa carregar cartões, pulseiras ou celular.
+                      Sua digital é tudo o que você precisa.
                     </p>
                   </div>
                 </div>
@@ -257,7 +283,8 @@ export default function LandingPage() {
                   <div className="space-y-2">
                     <h3 className="text-xl font-bold">À Prova de Fraudes</h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      A identificação biométrica garante que o prontuário acessado é realmente o seu, evitando erros de
+                      A identificação biométrica garante que o prontuário
+                      acessado é realmente o seu, evitando erros de
                       identificação.
                     </p>
                   </div>
@@ -269,8 +296,8 @@ export default function LandingPage() {
                   <div className="space-y-2">
                     <h3 className="text-xl font-bold">Informações Vitais</h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      Alergias, tipo sanguíneo, medicamentos, condições médicas e contatos de emergência sempre
-                      atualizados.
+                      Alergias, tipo sanguíneo, medicamentos, condições médicas
+                      e contatos de emergência sempre atualizados.
                     </p>
                   </div>
                 </div>
@@ -286,21 +313,33 @@ export default function LandingPage() {
                       </div>
                       <div>
                         <h4 className="font-bold">João Silva</h4>
-                        <p className="text-sm text-muted-foreground">Identificação Biométrica Verificada</p>
+                        <p className="text-sm text-muted-foreground">
+                          Identificação Biométrica Verificada
+                        </p>
                       </div>
                     </div>
                     <div className="space-y-3">
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground mb-1">ALERGIAS</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          ALERGIAS
+                        </p>
                         <p className="text-sm font-medium">Penicilina, Látex</p>
                       </div>
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground mb-1">MEDICAMENTOS</p>
-                        <p className="text-sm font-medium">Losartana 50mg, AAS 100mg</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          MEDICAMENTOS
+                        </p>
+                        <p className="text-sm font-medium">
+                          Losartana 50mg, AAS 100mg
+                        </p>
                       </div>
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground mb-1">CONTATO DE EMERGÊNCIA</p>
-                        <p className="text-sm font-medium">Maria Silva • (11) 98765-4321</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          CONTATO DE EMERGÊNCIA
+                        </p>
+                        <p className="text-sm font-medium">
+                          Maria Silva • (11) 98765-4321
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -318,20 +357,27 @@ export default function LandingPage() {
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
               <Shield className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-balance">Seus dados estão seguros</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-balance">
+              Seus dados estão seguros
+            </h2>
             <p className="text-lg text-muted-foreground text-pretty leading-relaxed">
-              Utilizamos as mais avançadas tecnologias de criptografia e segurança para proteger suas informações
-              médicas. Seus dados são armazenados com segurança e apenas você tem controle total sobre o que é
-              compartilhado.
+              Utilizamos as mais avançadas tecnologias de criptografia e
+              segurança para proteger suas informações médicas. Seus dados são
+              armazenados com segurança e apenas você tem controle total sobre o
+              que é compartilhado.
             </p>
             <div className="grid sm:grid-cols-3 gap-6 pt-8">
               <div className="space-y-2">
                 <p className="text-3xl font-bold text-primary">256-bit</p>
-                <p className="text-sm text-muted-foreground">Criptografia SSL</p>
+                <p className="text-sm text-muted-foreground">
+                  Criptografia SSL
+                </p>
               </div>
               <div className="space-y-2">
                 <p className="text-3xl font-bold text-primary">LGPD</p>
-                <p className="text-sm text-muted-foreground">Compliance Total</p>
+                <p className="text-sm text-muted-foreground">
+                  Compliance Total
+                </p>
               </div>
               <div className="space-y-2">
                 <p className="text-3xl font-bold text-primary">24/7</p>
@@ -349,9 +395,14 @@ export default function LandingPage() {
             <div className="space-y-4">
               <Link href="/" className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-                  <Heart className="w-6 h-6 text-primary-foreground" fill="currentColor" />
+                  <Heart
+                    className="w-6 h-6 text-primary-foreground"
+                    fill="currentColor"
+                  />
                 </div>
-                <span className="text-xl font-bold text-foreground">IDLife</span>
+                <span className="text-xl font-bold text-foreground">
+                  IDLife
+                </span>
               </Link>
               <p className="text-sm text-muted-foreground">
                 Identificação médica digital para salvar vidas em emergências.
@@ -360,13 +411,22 @@ export default function LandingPage() {
             <div className="space-y-3">
               <h4 className="font-bold text-sm">Produto</h4>
               <div className="flex flex-col gap-2 text-sm">
-                <Link href="#como-funciona" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="#como-funciona"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Como Funciona
                 </Link>
-                <Link href="#beneficios" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="#beneficios"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Benefícios
                 </Link>
-                <Link href="#seguranca" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="#seguranca"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Segurança
                 </Link>
               </div>
@@ -374,13 +434,22 @@ export default function LandingPage() {
             <div className="space-y-3">
               <h4 className="font-bold text-sm">Empresa</h4>
               <div className="flex flex-col gap-2 text-sm">
-                <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/about"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Sobre Nós
                 </Link>
-                <Link href="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/contact"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Contato
                 </Link>
-                <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/blog"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Blog
                 </Link>
               </div>
@@ -388,10 +457,16 @@ export default function LandingPage() {
             <div className="space-y-3">
               <h4 className="font-bold text-sm">Legal</h4>
               <div className="flex flex-col gap-2 text-sm">
-                <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/privacy"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Política de Privacidade
                 </Link>
-                <Link href="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/terms"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Termos de Uso
                 </Link>
               </div>
@@ -403,5 +478,5 @@ export default function LandingPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }

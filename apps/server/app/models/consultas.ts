@@ -3,22 +3,19 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 
 export default class Consulta extends BaseModel {
     @column({ isPrimary: true })
-    declare consulta_id: number
+    declare appointmentId: number
 
     @column()
-    declare paciente_id: number
+    declare patientId: number
 
     @column()
-    declare medico_id: number
+    declare doctorId: number
 
     @column.dateTime()
-    declare data_consulta: DateTime
-
+    declare dtConsulta: DateTime
+    
     @column()
-    declare diagnostico: string
-
-    @column()
-    declare observacoes?: string
+    declare observations?: string
 
     @column.dateTime({ autoCreate: true, columnName: 'created_at', serializeAs: 'created_at' })
   declare created_at: DateTime

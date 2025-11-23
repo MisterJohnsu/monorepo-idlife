@@ -38,7 +38,10 @@ interface RegisterPatientProps {
   patientName: (name: string) => void;
 }
 
-export function RegisterPatient({ onSuccess, patientName }: RegisterPatientProps) {
+export function RegisterPatient({
+  onSuccess,
+  patientName,
+}: RegisterPatientProps) {
   const {
     register,
     handleSubmit,
@@ -68,9 +71,9 @@ export function RegisterPatient({ onSuccess, patientName }: RegisterPatientProps
   });
   const handleFormSubmit = async (data: RegistrationPatientData) => {
     try {
-      await api.post('api/patients/register', data)
+      await api.post("api/patients/register", data);
       onSuccess(true);
-      patientName(data.patientName)
+      patientName(data.patientName);
       return;
     } catch (error) {
       console.error("Erro ao enviar o formulário:", error);
@@ -137,7 +140,7 @@ export function RegisterPatient({ onSuccess, patientName }: RegisterPatientProps
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Sexo *
+                  Gênero *
                 </label>
                 <select
                   id="state"
