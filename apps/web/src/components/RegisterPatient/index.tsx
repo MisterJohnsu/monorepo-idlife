@@ -39,6 +39,7 @@ const formSchema = z.object({
   allergies: z.string(),
   additionalInfo: z.string(),
   medications: z.string(),
+  desiases: z.string(),
 });
 
 type RegistrationPatientData = z.infer<typeof formSchema>;
@@ -77,6 +78,7 @@ export function RegisterPatient({
       allergies: "",
       additionalInfo: "",
       medications: "",
+      desiases: "",
     },
   });
   const handleFormSubmit = async (data: RegistrationPatientData) => {
@@ -320,6 +322,20 @@ export function RegisterPatient({
                 />
               </div>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Doenças Crônicas
+              </label>
+              <Input
+                type="text"
+                id="desiases"
+                placeholder="Ex: Diabetes, Hipertensão, etc."
+                className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                {...register("desiases")}
+              />
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Aparelhos Médicos Utilizados

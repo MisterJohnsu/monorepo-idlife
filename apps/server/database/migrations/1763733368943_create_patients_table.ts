@@ -9,12 +9,12 @@ export default class extends BaseSchema {
       table.increments('patientId').primary().notNullable()
       
       // Dados Pessoais
-      table.string('patientName').notNullable()
+      table.string('patient_name').notNullable()
       table.string('email').notNullable().unique()
       table.string('cpf', 11).notNullable().unique()
       table.string('password').notNullable()
       table.string('phone', 15).notNullable()
-      table.date('bithDate').notNullable()
+      table.date('birth_date').notNullable()
       table.json('address').notNullable()
       
       // Biometria (Nullable para permitir cadastro antes da digital)
@@ -22,13 +22,13 @@ export default class extends BaseSchema {
 
       // Dados Médicos/Opcionais
       table.string('gender').notNullable()
-      table.string('bloodType').notNullable()
-      table.string('emergencyPhone', 15).nullable()
-      table.string('emergencyName').nullable()
-      table.string('additionalInfo').nullable()
+      table.string('blood_type').notNullable()
+      table.string('emergency_phone', 15).nullable()
+      table.string('emergency_name').nullable()
+      table.string('additional_info').nullable()
       table.string('insurance').nullable()
       table.string('allergies').nullable()
-      table.string('medicalDevices').nullable()
+      table.string('medical_devices').nullable()
       table.string('medications').nullable()
       table.string('diseases').nullable()
 

@@ -12,7 +12,7 @@ export default class Patient extends BaseModel {
   @column()
   declare dy50_id: number | null
 
-  @column()
+  @column({ columnName: 'patient_name' })
   declare patientName: string
 
   @column()
@@ -24,13 +24,13 @@ export default class Patient extends BaseModel {
   @column()
   declare gender: string
 
-  @column()
+  @column({ columnName: 'blood_type' })
   declare bloodType: string
 
   @column()
   declare phone: string
 
-  @column()
+  @column({ columnName: 'birth_date' })
   declare birthDate: Date
 
   
@@ -47,22 +47,22 @@ export default class Patient extends BaseModel {
   @column()
   declare allergies?: string | null
 
-  @column()
+  @column({ columnName: 'medical_devices' })
   declare medicalDevices?: string | null
 
   @column()
   declare medications?: string | null
 
-  @column()
+  @column({ columnName: 'additional_info' })
   declare additionalInfo?: string | null
 
   @column()
   declare diseases?: string | null
 
-  @column()
+  @column({ columnName: 'emergency_phone' })
   declare emergencyPhone?: string | null
 
-  @column()
+  @column({ columnName: 'emergency_name' })
   declare emergencyName?: string | null
 
   @column.dateTime({ autoCreate: true })
