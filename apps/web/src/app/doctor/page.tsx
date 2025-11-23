@@ -8,6 +8,7 @@ import { useState } from "react"
 
 export default function DoctorDashboard() {
   const [view, setView] = useState<"search" | "register" | "biometry">("search")
+  const [patientName, setPatientName] = useState<string>("")
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-8 px-4">
@@ -48,7 +49,7 @@ export default function DoctorDashboard() {
             )}
           </div>
         </div>
-        {view === "search" ? <SearchPatients /> : view === 'biometry' ? <BiometricLinkSection patientName="Luan Sellera" /> : <RegisterPatient onSuccess={() => { setView('biometry')}} />}
+        {view === "search" ? <SearchPatients /> : view === 'biometry' ? <BiometricLinkSection patientName={patientName} /> : <RegisterPatient patientName={(name) => setPatientName(name)} onSuccess={() => { setView('biometry')}} />}
       </div>
     </main>
   )

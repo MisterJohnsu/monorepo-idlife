@@ -34,9 +34,10 @@ type RegistrationPatientData = z.infer<typeof formSchema>;
 
 interface RegisterPatientProps {
   onSuccess: (registredPatient: boolean) => void;
+  patientName: (name: string) => void;
 }
 
-export function RegisterPatient({ onSuccess }: RegisterPatientProps) {
+export function RegisterPatient({ onSuccess, patientName }: RegisterPatientProps) {
   const {
     register,
     handleSubmit,
@@ -46,17 +47,17 @@ export function RegisterPatient({ onSuccess }: RegisterPatientProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       patientName: "",
-      cpf: "",
+      cpf: "49718494123",
       birthDate: "",
-      phone: "",
-      email: "",
-      address: "",
-      city: "",
+      phone: "13974270746",
+      email: "example@gmail.com",
+      address: "rua luiz",
+      city: "santos",
       state: "SP",
       gender: "M",
       bloodType: "A+",
-      emergencyPhone: "",
-      emergencyName: "",
+      emergencyPhone: "13974270746",
+      emergencyName: "Luan",
       medicalDevices: "",
       insurance: "",
       allergies: "",
@@ -67,6 +68,7 @@ export function RegisterPatient({ onSuccess }: RegisterPatientProps) {
   const handleFormSubmit = async (data: RegistrationPatientData) => {
     if (data) {
       onSuccess(true);
+      patientName(data.patientName)
       console.log("Formulário enviado com sucesso:", data);
     }
   };
