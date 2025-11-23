@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { api } from "@/lib/axios"
 import { Calendar, MapPin, Phone, Search, User } from "lucide-react"
 import { useState } from "react"
 
@@ -68,28 +69,33 @@ export function SearchPatients() {
   const [hasSearched, setHasSearched] = useState(false)
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null)
 
-  const handleSearch = (e: React.FormEvent) => {
+  async function handleSearch(e: React.FormEvent) {
     e.preventDefault()
-    //aqui ele efetua a busca e precisa ser enviado o get para o banco de dados
+    try {
+      const { data } = await api.get('patients/search', {
+        data: {
+          searchTerm: searchTerm.trim()
+        }
+      })
+      setSearchResults(data)
 
-    
-    setHasSearched(true)
+      const results = data.filter(
+        (patient: any) =>
+          patient.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          patient.cpf.includes(searchTerm.replace(/\D/g, "")),
+      )
 
-    if (!searchTerm.trim()) {
-      setSearchResults([])
-      return
+      if (!searchTerm.trim()) {
+        setSearchResults([])
+        return
+      }
+
+      setSearchResults(results)
+      setHasSearched(true)
+      setSelectedPatient(null)
+    } catch (error) {
+      console.error('Erro ao buscar pacientes:', error)
     }
-
-    // Filtrar por nome ou CPF
-    const results = mockPatients.filter(
-      (patient) =>
-        patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.cpf.includes(searchTerm.replace(/\D/g, "")),
-    )
-
-    console.log('results ===> ', results)
-    setSearchResults(results)
-    setSelectedPatient(null)
   }
 
   const handleSelectPatient = (patient: Patient) => {
@@ -140,9 +146,8 @@ export function SearchPatients() {
                     <button
                       key={patient.id}
                       onClick={() => handleSelectPatient(patient)}
-                      className={`w-full text-left p-4 hover:bg-blue-50 transition-colors ${
-                        selectedPatient?.id === patient.id ? "bg-blue-100 border-l-4 border-blue-600" : ""
-                      }`}
+                      className={`w-full text-left p-4 hover:bg-blue-50 transition-colors ${selectedPatient?.id === patient.id ? "bg-blue-100 border-l-4 border-blue-600" : ""
+                        }`}
                     >
                       <div className="font-semibold text-gray-900 text-sm mb-1">{patient.name}</div>
                       <div className="text-xs text-gray-600 mb-2">CPF: {patient.cpf}</div>
