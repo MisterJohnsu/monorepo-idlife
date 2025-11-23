@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 export default class Patient extends BaseModel {
-  public static table = 'pacientes'
+  public static table = 'patients'
 
   public static primaryKey = 'pacienteId'
 
