@@ -22,7 +22,7 @@ export default class Patient extends BaseModel {
   declare cpf: string
 
   @column()
-  declare sex: string
+  declare gender: string
 
   @column()
   declare bloodType: string
@@ -44,7 +44,7 @@ export default class Patient extends BaseModel {
   declare insurance?: string | null
 
   @column()
-  declare alergies?: string | null
+  declare allergies?: string | null
 
   @column()
   declare medicalDevices?: string | null
