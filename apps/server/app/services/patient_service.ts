@@ -61,10 +61,20 @@ export class PatientService {
         }
     }
 
-    public async showPatient(id: string) {
+    public async showPatient(cpfOrName: string) {
         try {
-            const patient = await Patient.findOrFail(id)
-            return patient
+            let cpf
+            let name
+            let patients
+
+            if (/^\d{11}$/.test(cpfOrName)) {
+                cpf = cpfOrName
+                patients = await Patient.query().where('cpf', cpf)
+            } else {
+                name = cpfOrName
+                patients = await Patient.query().where('patientName', 'like', `%${name}%`)
+            }
+            return patients
         } catch (error) {
             console.error('[patienteService] Erro ao buscar patiente:', error)
             throw error // Repassa o erro para quem chamou

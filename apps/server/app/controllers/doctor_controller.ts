@@ -63,12 +63,15 @@ export default class DoctorController{
         }
     }
 
-    public async patientShow({ params, response }: HttpContext) {
+    public async patientShow({ request, response }: HttpContext) {
         try {
+            const { data } = request.all()
+            const patients = await this.patientService.showPatient(data)
 
-            const patient = await this.patientService.showPatient(params.id)
+            console.log("Paciente encontrado:", patients);
+
             return response.ok({
-                patient
+                patients
             })
         } catch (error) {
             return response.badRequest({ 
