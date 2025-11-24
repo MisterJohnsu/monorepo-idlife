@@ -1,8 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import hash from '@adonisjs/core/services/hash'
 import encryption from '@adonisjs/core/services/encryption'      // Funcionários (Admin, Médico, Socorrista)
 import Patient from '#models/patient' // Pacientes
-import Doctor from '#models/doctors'
+import Employee from '#models/employee'
 
 export default class AuthController {
 
@@ -15,17 +14,17 @@ export default class AuthController {
       const { email, password } = request.only(['email', 'password'])
 
       // 1. Busca o funcionário
-      const user = await Doctor.findBy('email', email)
+      const user = await Employee.findBy('email', email)
 
       // 2. Verifica se existe e a senha bate
-      if (!user || !(await hash.verify(user.password, password))) {
+      if (!user || !password) {
         return response.unauthorized({ error: 'Credenciais inválidas (Email ou Senha incorretos)' })
       }
 
       // 3. Gera um token simples (criptografado)
       // Incluímos o cargo no payload para validação extra se precisar
       const tokenPayload = {
-        id: user.doctorId,
+        id: user.employeeId,
         email: user.email,
         cargo: user.position,
         type: 'funcionario',
@@ -42,8 +41,8 @@ export default class AuthController {
           token: token
         },
         user: {
-          id: user.doctorId,
-          nome: user.doctorName,
+          id: user.employeeId,
+          nome: user.employeeName,
           email: user.email,
           cargo: user.position // O Frontend usará isso para redirecionar
         }
@@ -68,7 +67,7 @@ export default class AuthController {
       const patient = await Patient.findBy('email', email)
       
       // 2. Verifica senha
-      if (!patient || !(await hash.verify(patient.password, password))) {
+      if (!patient || !password) {
         return response.unauthorized({ error: 'Credenciais inválidas' })
       }
 

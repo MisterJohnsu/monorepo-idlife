@@ -1,7 +1,7 @@
 import { PatientService } from '#services/patient_service'
 import type { HttpContext } from '@adonisjs/core/http'
 
-export default class DoctorController{
+export default class EmployeeController{
 
     private patientService = new PatientService()
 
@@ -77,6 +77,4 @@ export default class DoctorController{
             })
         }
     }
-
-    
 }

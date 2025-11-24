@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertCircle,
-  Ambulance,
   CheckCircle,
   Clock,
   Fingerprint,
@@ -10,7 +9,6 @@ import {
   Shield,
   Stethoscope,
   User,
-  UserCog,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -141,7 +139,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            <Link href="/login" className="block group">
+            <Link href="/EmployeeLogin" className="block group">
               <Card className="h-full transition-all hover:border-primary hover:shadow-lg cursor-pointer">
                 <CardHeader className="text-center pt-8">
                   <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 mx-auto flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -155,7 +153,7 @@ export default function LandingPage() {
               </Card>
             </Link>
 
-            <Link href="/patient-login" className="block group">
+            <Link href="/PatientLogin" className="block group">
               <Card className="h-full transition-all hover:border-primary hover:shadow-lg cursor-pointer">
                 <CardHeader className="text-center pt-8">
                   <div className="w-16 h-16 rounded-2xl bg-green-100 dark:bg-green-900/30 mx-auto flex items-center justify-center group-hover:scale-110 transition-transform duration-300">

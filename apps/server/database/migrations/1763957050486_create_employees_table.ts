@@ -1,19 +1,19 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
-export default class Doctors extends BaseSchema {
-  // A tabela será criada com o nome 'doctors' para bater com a referência em Consultas
-  protected tableName = 'doctors'
+export default class Employees extends BaseSchema {
+  protected tableName = 'employees'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('doctorId').primary().unique()
+      table.increments('employees_id').primary().unique()
       
       table.string('position').notNullable()
       table.string('crm').notNullable().unique()
-      table.string('doctorName').notNullable()
+      table.string('employee_name').notNullable()
       table.string('email').notNullable().unique()
       table.string('password').notNullable()
       table.string('specialty').notNullable()
+      table.string('phone').notNullable()
 
       table.timestamps(true, true)
     })

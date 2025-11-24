@@ -1,22 +1,27 @@
-"use client"
-import { BiometricLinkSection } from "@/components/BiometricLinkSection"
-import { RegisterPatient } from "@/components/RegisterPatient"
-import { SearchPatients } from "@/components/SearchPatients"
-import { Button } from "@/components/ui/button"
-import { Fingerprint, Plus, Search } from "lucide-react"
-import { useState } from "react"
+"use client";
+import { BiometricLinkSection } from "@/components/BiometricLinkSection";
+import { RegisterPatient } from "@/components/RegisterPatient";
+import { SearchPatients } from "@/components/SearchPatients";
+import { Button } from "@/components/ui/button";
+import { Fingerprint, Plus, Search } from "lucide-react";
+import { useState } from "react";
 
 export default function DoctorDashboard() {
-  const [view, setView] = useState<"search" | "register" | "biometry">("search")
-  const [patientName, setPatientName] = useState<string>("")
+  const [view, setView] = useState<"search" | "register" | "biometry">(
+    "search"
+  );
+  const [patientName, setPatientName] = useState<string>("");
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-8 px-4">
-      
+    <main className="min-h-screen bg-linear-gradient-to-br from-blue-50 to-indigo-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-blue-900 mb-2">Portal do Médico</h1>
-          <p className="text-blue-600 mb-6">Gerenciamento de fichas de pacientes</p>
+          <h1 className="text-4xl font-bold text-blue-900 mb-2">
+            Portal do Médico
+          </h1>
+          <p className="text-blue-600 mb-6">
+            Gerenciamento de fichas de pacientes
+          </p>
 
           <div className="flex gap-3 flex-wrap">
             <Button
@@ -44,13 +49,26 @@ export default function DoctorDashboard() {
             {view === "biometry" && (
               <div className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md">
                 <Fingerprint className="h-4 w-4" />
-                <span className="text-sm font-medium">Registrando Biometria...</span>
+                <span className="text-sm font-medium">
+                  Registrando Biometria...
+                </span>
               </div>
             )}
           </div>
         </div>
-        {view === "search" ? <SearchPatients /> : view === 'biometry' ? <BiometricLinkSection patientName={patientName} /> : <RegisterPatient patientName={(name) => setPatientName(name)} onSuccess={() => { setView('biometry')}} />}
+        {view === "search" ? (
+          <SearchPatients />
+        ) : view === "biometry" ? (
+          <BiometricLinkSection patientName={patientName} />
+        ) : (
+          <RegisterPatient
+            patientName={(name) => setPatientName(name)}
+            onSuccess={() => {
+              setView("biometry");
+            }}
+          />
+        )}
       </div>
     </main>
-  )
+  );
 }

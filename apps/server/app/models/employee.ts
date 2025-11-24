@@ -1,12 +1,12 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 
-export default class Doctor extends BaseModel {
-    public static table = 'doctors'
-    public static primaryKey = 'doctorId'
+export default class Employees extends BaseModel {
+    public static table = 'employees'
+    public static primaryKey = 'employeesId'
 
-    @column({ isPrimary: true })
-    declare doctorId: number
+    @column({ isPrimary: true, columnName: 'employees_id' })
+    declare employeeId: number
 
     @column()
     declare position: string
@@ -14,8 +14,8 @@ export default class Doctor extends BaseModel {
     @column()
     declare crm: string
 
-    @column()
-    declare doctorName: string
+    @column({ columnName: 'employee_name' })
+    declare employeeName: string
 
     @column()
     declare email: string
