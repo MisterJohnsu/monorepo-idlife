@@ -1,4 +1,4 @@
-import { PatientService } from '#services/patient_sevice'
+import { PatientService } from '#services/patient_service'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class DoctorController{
@@ -65,7 +65,8 @@ export default class DoctorController{
 
     public async patientShow({ params, response }: HttpContext) {
         try {
-            const patient = await this.patientService.show(params.id)
+
+            const patient = await this.patientService.showPatient(params.id)
             return response.ok({
                 patient
             })
@@ -76,4 +77,6 @@ export default class DoctorController{
             })
         }
     }
+
+    
 }

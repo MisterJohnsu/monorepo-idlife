@@ -1,146 +1,145 @@
-import { HttpContext } from '@adonisjs/core/http'
+import type { HttpContext } from '@adonisjs/core/http'
 import hash from '@adonisjs/core/services/hash'
-import Patient from '#models/patient'
+import encryption from '@adonisjs/core/services/encryption'      // Funcionários (Admin, Médico, Socorrista)
+import Patient from '#models/patient' // Pacientes
 import Doctor from '#models/doctors'
-import encryption from '@adonisjs/core/services/encryption'
 
 export default class AuthController {
-  // Login do Paciente
-  public async loginPatient({ request, response }: HttpContext) {
+
+  /**
+   * LOGIN DE FUNCIONÁRIOS (Admin, Médico, Socorrista)
+   * Verifica na tabela 'users' e retorna o cargo para o front redirecionar.
+   */
+  public async loginEmployee({ request, response }: HttpContext) {
     try {
       const { email, password } = request.only(['email', 'password'])
 
-      // Buscar paciente por email
-      const patient = await Patient.findBy('email', email)
+      // 1. Busca o funcionário
+      const user = await Doctor.findBy('email', email)
 
-      if (!patient) {
-        return response.status(401).json({
-          error: 'Credenciais inválidas'
-        })
+      // 2. Verifica se existe e a senha bate
+      if (!user || !(await hash.verify(user.password, password))) {
+        return response.unauthorized({ error: 'Credenciais inválidas (Email ou Senha incorretos)' })
       }
 
-      // Verificar password
-      const isValidpassword = await hash.verify(patient.password, password)
-
-      if (!isValidpassword) {
-        return response.status(401).json({
-          error: 'Credenciais inválidas'
-        })
-      }
-
-      // Gerar token
+      // 3. Gera um token simples (criptografado)
+      // Incluímos o cargo no payload para validação extra se precisar
       const tokenPayload = {
-        patientId: patient.patientId,
+        id: user.doctorId,
+        email: user.email,
+        cargo: user.position,
+        type: 'funcionario',
+        timestamp: Date.now()
+      }
+      
+      const token = encryption.encrypt(JSON.stringify(tokenPayload))
+
+      // 4. Retorna dados para o Frontend
+      return response.ok({
+        message: 'Login realizado com sucesso',
+        token: {
+          type: 'bearer',
+          token: token
+        },
+        user: {
+          id: user.doctorId,
+          nome: user.doctorName,
+          email: user.email,
+          cargo: user.position // O Frontend usará isso para redirecionar
+        }
+      })
+
+    } catch (error) {
+      console.error('Erro no login de funcionário:', error)
+      return response.internalServerError({ error: 'Erro interno ao realizar login' })
+    }
+  }
+
+  /**
+   * LOGIN DE PACIENTES
+   * Verifica na tabela 'pacientes'.
+   */
+  public async loginPatient({ request, response }: HttpContext) {
+    try {
+      
+      const { email, password } = request.only(['email', 'password'])
+
+      // 1. Busca o paciente
+      const patient = await Patient.findBy('email', email)
+      
+      // 2. Verifica senha
+      if (!patient || !(await hash.verify(patient.password, password))) {
+        return response.unauthorized({ error: 'Credenciais inválidas' })
+      }
+
+      // 3. Gera Token
+      const tokenPayload = {
+        id: patient.patientId,
         email: patient.email,
         type: 'patient',
         timestamp: Date.now()
       }
+      
       const token = encryption.encrypt(JSON.stringify(tokenPayload))
 
-      return response.json({
-        user: {
-          patientId: patient.patientId,
-          email: patient.email,
-          patientName: patient.patientName,
+      // 4. Retorno
+      return response.ok({
+        message: 'Bem-vindo, paciente',
+        token: {
+          type: 'bearer',
+          token: token
         },
-        token: token
+        user: {
+          id: patient.patientId,
+          nome: patient.patientName,
+          email: patient.email,
+          role: 'patient' // Fixo para pacientes
+        }
       })
+
     } catch (error) {
       console.error('Erro no login do paciente:', error)
-      return response.status(500).json({
-        error: 'Erro interno do servidor'
-      })
+      return response.internalServerError({ error: 'Erro interno no login do paciente' })
     }
   }
 
-  // Login do Médico
-  public async loginMedico({ request, response }: HttpContext) {
-    try {
-      const { email, password } = request.only(['email', 'password'])
-
-      // Buscar médico por email
-      const doctor = await Doctor.findBy('email', email)
-
-      if (!doctor) {
-        return response.status(401).json({
-          error: 'Credenciais inválidas'
-        })
-      }
-
-      // Verificar password
-      const isValidpassword = await hash.verify(doctor.password, password)
-
-      if (!isValidpassword) {
-        return response.status(401).json({
-          error: 'Credenciais inválidas'
-        })
-      }
-
-      // Gerar token
-      const tokenPayload = {
-        id: doctor.doctorId,
-        email: doctor.email,
-        type: 'doctor',
-        timestamp: Date.now()
-      }
-      const token = encryption.encrypt(JSON.stringify(tokenPayload))
-
-      return response.json({
-        user: {
-          doctorId: doctor.doctorId,
-          email: doctor.email,
-          doctorName: doctor.doctorName,
-          crm: doctor.crm,
-          specialty: doctor.specialty,
-        },
-        token: token
-      })
-    } catch (error) {
-      console.error('Erro no login do médico:', error)
-      return response.status(500).json({
-        error: 'Erro interno do servidor'
-      })
-    }
-  }
-  // Método para validar token (útil para middleware)
+  /**
+   * VALIDAÇÃO DE TOKEN (Opcional / Middleware)
+   * Usado para verificar se o usuário ainda está logado
+   */
   public async validateToken({ request, response }: HttpContext) {
     try {
-      const token = request.header('authorization')?.replace('Bearer ', '')
-
-      if (!token) {
-        return response.status(401).json({
-          error: 'Token não fornecido'
-        })
+      const authHeader = request.header('authorization')
+      
+      if (!authHeader) {
+        return response.unauthorized({ error: 'Token não fornecido' })
       }
 
-      const decrypted: any = encryption.decrypt(token)
-      const payload = JSON.parse(decrypted)
+      const token = authHeader.replace('Bearer ', '')
+      
+      // Descriptografa
+      const decrypted = encryption.decrypt(token)
+      if (!decrypted) {
+        return response.unauthorized({ error: 'Token inválido ou corrompido' })
+      }
 
-      // Verificar se o token não expirou (24 horas)
+      const payload = JSON.parse(decrypted as string)
+
+      // Validação de Expiração (24 horas)
       const tokenAge = Date.now() - payload.timestamp
-      const maxAge = 24 * 60 * 60 * 1000 // 24 horas
+      const maxAge = 24 * 60 * 60 * 1000 
 
       if (tokenAge > maxAge) {
-        return response.status(401).json({
-          error: 'Token expirado'
-        })
+        return response.unauthorized({ error: 'Sessão expirada. Faça login novamente.' })
       }
 
-      return response.json({
-        valid: true,
-        user: payload
+      return response.ok({ 
+        valid: true, 
+        user: payload 
       })
-    } catch (error) {
-      return response.status(401).json({
-        error: 'Token inválido'
-      })
-    }
-  }
 
-  // Logout (invalidar token - opcional)
-  public async logout({ response }: HttpContext) {
-    return response.json({
-      message: 'Logout realizado com sucesso'
-    })
+    } catch (error) {
+      return response.unauthorized({ error: 'Token inválido' })
+    }
   }
 }
