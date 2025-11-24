@@ -4,8 +4,8 @@ import router from '@adonisjs/core/services/router'
 
 router.group(() => {
   router.group(() => {
-    router.post('/register', [EmployeeController, 'patientCreate'])
-    router.get('/search/:id', [EmployeeController, 'patientShow'])
+    router.post('/register', [DoctorController, 'patientCreate'])
+    router.post('/search', [DoctorController, 'patientShow'])
 
     // Rota de login de pacientes no Adonis
     router.post('/login-patient', [AuthController, 'loginPatient'])

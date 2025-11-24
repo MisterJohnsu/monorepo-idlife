@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/axios";
-import { Calendar, MapPin, Phone, Search, User } from "lucide-react";
+import { Calendar, Edit, MapPin, Phone, Search, Stethoscope, User } from "lucide-react";
+import { DateTime } from "luxon";
 import { useState } from "react";
 
 interface Patient {
@@ -17,9 +18,7 @@ interface Patient {
   birthDate: string;
   phone: string;
   email: string;
-  address: string;
-  city: string;
-  state: string;
+  address: { street: string; number?: string, city: string, state: string };
   gender: string;
   bloodType: string;
   emergencyPhone: string;
@@ -32,7 +31,11 @@ interface Patient {
   lastVisit: string;
 }
 
-export function SearchPatients() {
+interface SearchPatientsProps {
+  onSelectPatient?: (patient: Patient) => void;
+}
+
+export function SearchPatients({ onSelectPatient }: SearchPatientsProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Patient[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
@@ -40,22 +43,25 @@ export function SearchPatients() {
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    try {
-      const { data } = await api.get(`api/patients/search/${searchTerm}`);
-      setSearchResults(data);
 
-      const results = data.filter(
+    if (searchTerm.trim().length <= 0) {
+      setSearchResults([]);
+      setHasSearched(false);
+      setSelectedPatient(null);
+      return;
+    }
+
+    try {
+      const { data } = await api.post('api/patients/search', {
+        data: searchTerm
+      });
+      const results = data.patients.filter(
         (patient: any) =>
           patient.patientName
             .toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
           patient.cpf.includes(searchTerm.replace(/\D/g, ""))
       );
-
-      if (!searchTerm.trim()) {
-        setSearchResults([]);
-        return;
-      }
 
       setSearchResults(results);
       setHasSearched(true);
@@ -66,13 +72,17 @@ export function SearchPatients() {
   }
 
   const handleSelectPatient = (patient: Patient) => {
-    console.log("Paciente selecionado:", patient);
     setSelectedPatient(patient);
   };
 
+  const handleAccessRecord = () => {
+    if (selectedPatient) {
+      onSelectPatient?.(selectedPatient);
+    }
+  }
+
   return (
     <div className="space-y-6">
-      {/* Formulário de Busca */}
       <Card className="p-6 shadow-lg border-0 bg-white">
         <form onSubmit={handleSearch} className="space-y-4">
           <div className="flex flex-col sm:flex-row gap-3">
@@ -99,13 +109,11 @@ export function SearchPatients() {
         </form>
       </Card>
 
-      {/* Resultados da Busca */}
       {hasSearched && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Lista de Pacientes */}
           <div className="lg:col-span-1">
             <Card className="shadow-lg border-0 overflow-hidden">
-              <div className="bg-linear-gradient-to-r from-blue-600 to-blue-700 p-4">
+              <div className="bg-linear-gradient-to-r from-blue-600 bg-blue-600  to-blue-700 p-4">
                 <h2 className="text-white font-semibold flex items-center gap-2">
                   <User className="h-5 w-5" />
                   Resultados ({searchResults.length})
@@ -118,11 +126,10 @@ export function SearchPatients() {
                     <button
                       key={patient.patientId}
                       onClick={() => handleSelectPatient(patient)}
-                      className={`w-full text-left p-4 hover:bg-blue-50 transition-colors ${
-                        selectedPatient?.patientId === patient.patientId
+                      className={`w-full text-left p-4 hover:bg-blue-50 transition-colors ${selectedPatient?.patientId === patient.patientId
                           ? "bg-blue-100 border-l-4 border-blue-600"
                           : ""
-                      }`}
+                        }`}
                     >
                       <div className="font-semibold text-gray-900 text-sm mb-1">
                         {patient.patientName}
@@ -144,7 +151,7 @@ export function SearchPatients() {
                           {patient.status === "ativo" ? "Ativo" : "Inativo"}
                         </Badge>
                         <span className="text-xs text-gray-500">
-                          Vis: {patient.lastVisit.split("/")[0]}
+                          {patient.lastVisit ? patient.lastVisit.split("/"[0]) : ''}
                         </span>
                       </div>
                     </button>
@@ -159,11 +166,10 @@ export function SearchPatients() {
             </Card>
           </div>
 
-          {/* Ficha do Paciente */}
           <div className="lg:col-span-2">
             {selectedPatient ? (
               <Card className="shadow-lg border-0 overflow-hidden">
-                <div className="bg-linear-gradient-to-r from-blue-600 to-blue-700 p-6">
+                <div className="bg-linear-gradient-to-r bg-blue-600 from-blue-600 to-blue-700 p-6">
                   <h3 className="text-white text-2xl font-bold">
                     {selectedPatient.patientName}
                   </h3>
@@ -173,7 +179,6 @@ export function SearchPatients() {
                 </div>
 
                 <div className="p-6 space-y-6">
-                  {/* Informações Pessoais */}
                   <section>
                     <h4 className="font-semibold text-gray-900 mb-4 text-lg">
                       Informações Pessoais
@@ -182,7 +187,7 @@ export function SearchPatients() {
                       <InfoField
                         icon={Calendar}
                         label="Data de Nascimento"
-                        value={selectedPatient.birthDate}
+                        value={DateTime.fromISO(selectedPatient.birthDate).toLocaleString(DateTime.DATE_MED)}
                       />
                       <InfoField
                         icon={Phone}
@@ -193,13 +198,12 @@ export function SearchPatients() {
                         <InfoField
                           icon={MapPin}
                           label="Endereço"
-                          value={`${selectedPatient.address}, ${selectedPatient.city}`}
+                          value={`${selectedPatient.address.street}, ${selectedPatient.address.city}`}
                         />
                       </div>
                     </div>
                   </section>
 
-                  {/* Informações de Contato */}
                   <section className="border-t pt-6">
                     <h4 className="font-semibold text-gray-900 mb-4 text-lg">
                       Informações de Contato
@@ -214,7 +218,6 @@ export function SearchPatients() {
                     </div>
                   </section>
 
-                  {/* Status */}
                   <section className="border-t pt-6">
                     <h4 className="font-semibold text-gray-900 mb-4 text-lg">
                       Status e Histórico
@@ -245,16 +248,14 @@ export function SearchPatients() {
                     </div>
                   </section>
 
-                  {/* Ações */}
                   <div className="border-t pt-6 flex gap-3">
-                    <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
+                    <Button className="cursor-pointer flex-1 bg-blue-600 hover:bg-blue-700 text-white">
+                      <Edit className="h-4 w-4 mr-2" />
                       Editar Ficha
                     </Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1 border-blue-600 text-blue-600 hover:bg-blue-50 bg-transparent"
-                    >
-                      Agendar Consulta
+                    <Button onClick={handleAccessRecord} className="cursor-pointer flex-1 bg-green-600 hover:bg-green-700 text-white">
+                      <Stethoscope className="h-4 w-4 mr-2" />
+                      Acessar Ficha
                     </Button>
                   </div>
                 </div>

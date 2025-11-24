@@ -1,16 +1,18 @@
 "use client";
 import { BiometricLinkSection } from "@/components/BiometricLinkSection";
+import { PatientCareRecord } from "@/components/PatientCareRecord";
 import { RegisterPatient } from "@/components/RegisterPatient";
 import { SearchPatients } from "@/components/SearchPatients";
 import { Button } from "@/components/ui/button";
-import { Fingerprint, Plus, Search } from "lucide-react";
+import { Fingerprint, Plus, Search, User } from "lucide-react";
 import { useState } from "react";
 
 export default function DoctorDashboard() {
-  const [view, setView] = useState<"search" | "register" | "biometry">(
-    "search"
-  );
+  const [view, setView] = useState<
+    "search" | "register" | "biometry" | "patient-record"
+  >("search");
   const [patientName, setPatientName] = useState<string>("");
+  const [patient, setPatient] = useState<any>(null);
 
   return (
     <main className="min-h-screen bg-linear-gradient-to-br from-blue-50 to-indigo-50 py-8 px-4">
@@ -54,12 +56,26 @@ export default function DoctorDashboard() {
                 </span>
               </div>
             )}
+            {view === "patient-record" && (
+              <div className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md">
+                <User className="h-4 w-4" />
+                <span className="text-sm font-medium">
+                  {patient.patientName}...
+                </span>
+              </div>
+            )}
           </div>
         </div>
         {view === "search" ? (
-          <SearchPatients />
+          <SearchPatients
+            onSelectPatient={(patient) => {
+              (setPatient(patient), setView("patient-record"));
+            }}
+          />
         ) : view === "biometry" ? (
           <BiometricLinkSection patientName={patientName} />
+        ) : view === "patient-record" ? (
+          <PatientCareRecord patient={patient} />
         ) : (
           <RegisterPatient
             patientName={(name) => setPatientName(name)}
