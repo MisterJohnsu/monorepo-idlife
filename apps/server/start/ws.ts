@@ -23,5 +23,9 @@ app.ready(() => {
       socket.emit("consultCpf", {message: "CPF Encontrado", data})
       return { data }
     })
+
+    socket.on('listenArduino', (message) => {
+      console.log('Mensagem do Arduino:', message)
+    })
   })
 })

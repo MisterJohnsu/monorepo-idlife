@@ -21,7 +21,7 @@ export function BiometricLinkSection({
       setStep("scanning");
       const response = await bridgeApi.post("/cadastro")
       if (response.status === 200) {
-        setStep("success");
+        setStep("scanning");
       }
 
     } catch (error) {
