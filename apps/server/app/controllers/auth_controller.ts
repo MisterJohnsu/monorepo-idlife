@@ -60,14 +60,13 @@ export default class AuthController {
    */
   public async loginPatient({ request, response }: HttpContext) {
     try {
-      
-      const { email, password } = request.only(['email', 'password'])
+      const { data } = request.all()
 
       // 1. Busca o paciente
-      const patient = await Patient.findBy('email', email)
+      const patient = await Patient.findBy('email', data.email)
       
       // 2. Verifica senha
-      if (!patient || !password) {
+      if (!patient || !data.password) {
         return response.unauthorized({ error: 'Credenciais inválidas' })
       }
 

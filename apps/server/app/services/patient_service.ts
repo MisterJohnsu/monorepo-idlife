@@ -51,23 +51,33 @@ export class PatientService {
         }
     }
 
-    public async showPatient(cpfOrName: string) {
+    public async showPatient(data: any) {
         try {
             let cpf
             let name
             let patients
 
-            if (/^\d{11}$/.test(cpfOrName)) {
-                cpf = cpfOrName
-                patients = await Patient.query().where('cpf', cpf)
+            if (data?.searchEmail) {
+                patients = await Patient.findByOrFail('email', data.email)
+                return patients
+            }
+
+            if (data?.searchBiometric) {
+                patients = await Patient.findByOrFail('dy50_id', data.biometricId)
+                return patients
+            }
+
+            if (/^\d{11}$/.test(data)) {
+                cpf = data
+                patients = await Patient.findByOrFail('cpf', cpf)
             } else {
-                name = cpfOrName
+                name = data
                 patients = await Patient.query().where('patientName', 'like', `%${name}%`)
             }
             return patients
         } catch (error) {
             console.error('[patienteService] Erro ao buscar patiente:', error)
-            throw error // Repassa o erro para quem chamou
+            throw error
         }
     }
 

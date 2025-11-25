@@ -28,7 +28,7 @@ export default function ResponderPage() {
     try {
       setIsScanning(true);
       setScanStatus("scanning");
-      await bridgeApi.post("/identificar");
+      await bridgeApi.get("/identificar");
     } catch (error) {
       console.error("Erro ao iniciar a captura biométrica:", error);
       setScanStatus("error");
@@ -37,25 +37,27 @@ export default function ResponderPage() {
 
   const scanningApi = async (biometricId: string) => {
     try {
-      const response = await api.post('api/patients/search', {
-        biometricId,
-        searchBiometric: true,
-      })
+      const response = await api.post("api/patients/search", {
+        data: {
+          biometricId,
+          searchBiometric: true,
+        },
+      });
       if (response.status === 200) {
-        setPatientData(response.data.patients[0]);
+        setPatientData(response.data.patients);
         setScanStatus("success");
       }
     } catch (error) {
       console.error("Erro ao buscar paciente:", error);
       setScanStatus("error");
     }
-  }
+  };
 
   useEffect(() => {
     const handleListenArduino = (data: any) => {
       setMessageArduino(data.message);
-      if (data.message.includes("Identificado OK: ID")) {
-        const replaceData = data.message.replace("Identificado OK: ID", "").trim();
+      if (data.message.includes("Identificado: ID")) {
+        const replaceData = data.message.replace("Identificado: ID", "").trim();
         const biometricId = parseInt(replaceData, 10);
         scanningApi(String(biometricId));
       }
@@ -105,12 +107,13 @@ export default function ResponderPage() {
           >
             {/* Scanner Visualization */}
             <div
-              className={`w-64 h-64 mx-auto rounded-3xl border-4 flex items-center justify-center transition-all duration-500 ${scanStatus === "scanning"
+              className={`w-64 h-64 mx-auto rounded-3xl border-4 flex items-center justify-center transition-all duration-500 ${
+                scanStatus === "scanning"
                   ? "border-blue-500 bg-blue-950/30 shadow-[0_0_50px_rgba(59,130,246,0.5)]"
                   : scanStatus === "success"
                     ? "border-green-500 bg-green-950/30 shadow-[0_0_50px_rgba(34,197,94,0.5)]"
                     : "border-slate-700 bg-slate-900 hover:border-slate-500 hover:bg-slate-800"
-                }`}
+              }`}
             >
               {scanStatus === "idle" && (
                 <Fingerprint
@@ -150,7 +153,9 @@ export default function ResponderPage() {
               {scanStatus === "scanning" && (
                 <div className="flex items-center justify-center gap-3 text-blue-400 animate-pulse">
                   <Loader2 className="w-6 h-6 animate-spin" />
-                  <span className="text-xl font-medium">{messageArduino ?  messageArduino : 'Lendo Digital...'}</span>
+                  <span className="text-xl font-medium">
+                    {messageArduino ? messageArduino : "Lendo Digital..."}
+                  </span>
                 </div>
               )}
               {scanStatus === "success" && (

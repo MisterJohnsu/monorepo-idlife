@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { User, Lock, Mail, AlertCircle } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
+import { api } from "@/lib/axios";
 
 export default function PatientLoginPage() {
   const router = useRouter();
@@ -26,31 +27,24 @@ export default function PatientLoginPage() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const [loggedPatient, setLoggedPatient] = useState(null);
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
     try {
-      // Rota de login específica para pacientes
-      const response = await fetch(
-        "http://localhost:3333/api/patients/login-patient",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const response = await api.post("api/patients/login-patient", {
+        data: {
+          email,
+          password,
+        },
+      });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        Cookies.set("patient_token", data.token.token, { expires: 1 });
-        router.push("/patient/dashboard");
+      if (response.status === 200) {
+        Cookies.set("patient_token", response.data.token.token, { expires: 1 });
+        router.push(`/patient/dashboard?email=${encodeURIComponent(email)}`);
       } else {
-        setError(data.error || "Dados incorretos.");
+        setError(response.data.error || "Dados incorretos.");
       }
     } catch (err) {
       console.error(err);

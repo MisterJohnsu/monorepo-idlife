@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardContent,
@@ -19,8 +20,37 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/axios";
 
 export default function PatientDashboard() {
+  const [patient, setPatient] = useState<any>(null);
+
+  const getPatient = async (emailPatient: string) => {
+    try {
+      const response = await api.post("api/patients/search", {
+        data: {
+          email: emailPatient,
+          searchEmail: true,
+        },
+      });
+
+      if (response.status === 200) {
+        setPatient(response.data.patients[0]);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar paciente:", error);
+    }
+  };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get("email");
+    if (email) {
+      getPatient(email);
+    }
+  }, []);
+
   return (
     <div className="space-y-8">
       <div>
@@ -56,43 +86,36 @@ export default function PatientDashboard() {
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-8 items-start">
-              <div className="relative">
-                <Avatar className="w-32 h-32 border-4 border-white/10 shadow-xl">
-                  <AvatarImage src="/placeholder-user.jpg" />
-                  <AvatarFallback className="bg-slate-700 text-2xl">
-                    JS
-                  </AvatarFallback>
-                </Avatar>
+            <div className="space-y-6 flex-1">
+              <div>
+                <h2 className="text-2xl font-bold mb-1">{patient?.name}</h2>
+                <p className="text-slate-400 text-sm uppercase tracking-wider">
+                  Data de Nasc: {patient?.birthDate}
+                </p>
+                <p className="text-slate-400 text-sm uppercase tracking-wider">
+                  CPF: {patient?.cpf}
+                </p>
               </div>
 
-              <div className="space-y-6 flex-1">
+              <div className="grid grid-cols-2 gap-x-12 gap-y-4">
                 <div>
-                  <h2 className="text-2xl font-bold mb-1">JOÃO SILVA</h2>
-                  <p className="text-slate-400 text-sm uppercase tracking-wider">
-                    Data de Nasc: 15/05/1980
+                  <p className="text-xs text-slate-500 uppercase font-bold mb-1">
+                    Tipo Sanguíneo:
                   </p>
-                  <p className="text-slate-400 text-sm uppercase tracking-wider">
-                    CPF: 123.456.789-00
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <Droplet className="w-4 h-4 text-red-400" />
+                    <span className="text-lg text-slate-950 font-semibold">
+                      {patient?.bloodType}
+                    </span>
+                  </div>
                 </div>
-
-                <div className="grid grid-cols-2 gap-x-12 gap-y-4">
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase font-bold mb-1">
-                      Tipo Sanguíneo
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <Droplet className="w-4 h-4 text-red-400" />
-                      <span className="text-lg font-semibold">O Positivo</span>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase font-bold mb-1">
-                      Plano de Saúde
-                    </p>
-                    <p className="text-lg font-semibold">Unimed Nacional</p>
-                  </div>
+                <div>
+                  <p className="text-xs text-slate-500 uppercase font-bold mb-1">
+                    Plano de Saúde:
+                  </p>
+                  <p className="text-lg text-slate-950 font-semibold">
+                    {patient?.insurance}
+                  </p>
                 </div>
               </div>
             </div>
@@ -103,7 +126,9 @@ export default function PatientDashboard() {
                   <AlertCircle className="w-4 h-4" />
                   <span className="text-xs font-bold uppercase">Alergias</span>
                 </div>
-                <p className="text-sm font-medium">Penicilina, Látex</p>
+                <p className="text-sm text-slate-950 font-medium">
+                  {patient?.allergies}
+                </p>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-blue-300 mb-1">
