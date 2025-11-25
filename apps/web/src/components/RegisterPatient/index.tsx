@@ -48,12 +48,12 @@ type RegistrationPatientData = z.infer<typeof formSchema>;
 
 interface RegisterPatientProps {
   onSuccess: (registredPatient: boolean) => void;
-  patientName: (name: string) => void;
+  onPatient: (patient: any) => void;
 }
 
 export function RegisterPatient({
   onSuccess,
-  patientName,
+  onPatient,
 }: RegisterPatientProps) {
   const {
     register,
@@ -88,28 +88,21 @@ export function RegisterPatient({
   const handleFormSubmit = async (data: RegistrationPatientData) => {
     try {
       const response = await api.post("api/patients/register", { data });
-      console.log('response ===> ', response)
       if (response.status === 201) {
         onSuccess(true);
-        patientName(data.patientName);
-        socket.emit('registerCpf', { cpf: data.cpf });
+        onPatient(data);
+        socket.emit("registerCpf", { cpf: data.cpf });
       }
     } catch (error) {
       console.error("Erro ao enviar o formulário:", error);
     }
   };
 
-  const messageArduino = socket.on('listenArduino', (data) => {
-    console.log('Mensagem do Arduino recebida no cliente:', data);
-  });
-
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Conectado ao servidor de WebSocket');
+    socket.on("connect", () => {
+      console.log("Conectado ao servidor de WebSocket");
     });
-    
-    console.log('messageArduino ===> ', messageArduino)
-  }, [messageArduino])
+  }, []);
 
   return (
     <div className="space-y-6">

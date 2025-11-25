@@ -2,7 +2,7 @@ import { PatientService } from '#services/patient_service'
 import { EmployeeService } from '#services/employee_service'
 import type { HttpContext } from '@adonisjs/core/http'
 
-export default class EmployeeController{
+export default class EmployeeController {
 
     private patientService = new PatientService()
 
@@ -10,24 +10,32 @@ export default class EmployeeController{
         try {
             const { data } = request.all()
 
-            if( data.biometricId ) {
-                const pacient = await this.patientService.create(data, 'registerBiometric')
-                return response.created({
-                  message: 'Biometria cadastrada com sucesso',
-                  pacient
-                })
-            }
-
             const pacient = await this.patientService.create(data)
 
             return response.created({
-              message: 'Paciente cadastrado com sucesso',
-              pacient
+                message: 'Paciente cadastrado com sucesso',
+                pacient
             })
         } catch (error) {
-            return response.badRequest({ 
-              error: 'Erro ao cadastrar paciente', 
-              details: error.message 
+            return response.badRequest({
+                error: 'Erro ao cadastrar paciente',
+                details: error.message
+            })
+        }
+    }
+
+    public async patientBiometricCreate({ response, request }: HttpContext) {
+        try {
+            const { data } = request.all()
+            const patient = await this.patientService.create(data, 'registerBiometric')
+            return response.created({
+                message: 'Biometria cadastrada com sucesso',
+                patient
+            })
+        } catch (error) {
+            return response.badRequest({
+                error: 'Erro ao cadastrar paciente',
+                details: error.message
             })
         }
     }
@@ -42,9 +50,9 @@ export default class EmployeeController{
                 updatedPaciente
             })
         } catch (error) {
-            return response.badRequest({ 
-              error: 'Erro ao atualizar paciente', 
-              details: error.message 
+            return response.badRequest({
+                error: 'Erro ao atualizar paciente',
+                details: error.message
             })
         }
     }
@@ -57,9 +65,9 @@ export default class EmployeeController{
                 message: 'Paciente deletado com sucesso'
             })
         } catch (error) {
-            return response.badRequest({ 
-              error: 'Erro ao deletar paciente', 
-              details: error.message 
+            return response.badRequest({
+                error: 'Erro ao deletar paciente',
+                details: error.message
             })
         }
     }
@@ -69,15 +77,13 @@ export default class EmployeeController{
             const { data } = request.all()
             const patients = await this.patientService.showPatient(data)
 
-            console.log("Paciente encontrado:", patients);
-
             return response.ok({
                 patients
             })
         } catch (error) {
-            return response.badRequest({ 
-              error: 'Erro ao buscar paciente', 
-              details: error.message 
+            return response.badRequest({
+                error: 'Erro ao buscar paciente',
+                details: error.message
             })
         }
     }
@@ -88,16 +94,15 @@ export default class EmployeeController{
     public async employeeCreate({ request, response }: HttpContext) {
         try {
             const { data } = request.all()
-            console.log(data);
             const employee = await this.employeeService.create(data)
             return response.created({
-              message: 'Funcionario cadastrado com sucesso',
-              employee
+                message: 'Funcionario cadastrado com sucesso',
+                employee
             })
         } catch (error) {
-            return response.badRequest({ 
-              error: 'Erro ao cadastrar funcionario', 
-              details: error.message 
+            return response.badRequest({
+                error: 'Erro ao cadastrar funcionario',
+                details: error.message
             })
         }
     }

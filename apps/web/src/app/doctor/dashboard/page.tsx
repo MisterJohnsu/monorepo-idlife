@@ -11,7 +11,6 @@ export default function DoctorDashboard() {
   const [view, setView] = useState<
     "search" | "register" | "biometry" | "patient-record"
   >("search");
-  const [patientName, setPatientName] = useState<string>("");
   const [patient, setPatient] = useState<any>(null);
 
   return (
@@ -68,15 +67,21 @@ export default function DoctorDashboard() {
         </div>
         {view === "search" ? (
           <SearchPatients
-            onSelectPatient={(patient) => {setView("patient-record"); setPatient(patient)}}
+            onSelectPatient={(patientData) => {
+              setView("patient-record");
+              setPatient(patientData);
+            }}
           />
         ) : view === "biometry" ? (
-          <BiometricLinkSection patientName={patientName} />
+          <BiometricLinkSection
+            patient={patient}
+            onView={(view) => setView(view)}
+          />
         ) : view === "patient-record" ? (
           <PatientCareRecord patient={patient} />
         ) : (
           <RegisterPatient
-            patientName={(name) => setPatientName(name)}
+            onPatient={(patientData) => setPatient(patientData)}
             onSuccess={() => {
               setView("biometry");
             }}

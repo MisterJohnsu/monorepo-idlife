@@ -18,7 +18,7 @@ export default class extends BaseSchema {
       table.json('address').notNullable()
       
       // Biometria (Nullable para permitir cadastro antes da digital)
-      table.integer('dy50_id').nullable().unique() 
+      table.string('dy_50_id').nullable().unique() 
 
       // Dados Médicos/Opcionais
       table.string('gender').notNullable()

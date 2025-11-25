@@ -9,8 +9,8 @@ export default class Patient extends BaseModel {
   declare patientId: number
 
   // Campos obrigatórios
-  @column()
-  declare dy50_id: number | null
+  @column({ columnName: 'dy_50_id' })
+  declare dy50_id: string | null
 
   @column({ columnName: 'patient_name' })
   declare patientName: string
