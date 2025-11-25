@@ -88,6 +88,7 @@ export function RegisterPatient({
   const handleFormSubmit = async (data: RegistrationPatientData) => {
     try {
       const response = await api.post("api/patients/register", { data });
+      console.log('response ===> ', response)
       if (response.status === 201) {
         onSuccess(true);
         patientName(data.patientName);
@@ -95,7 +96,6 @@ export function RegisterPatient({
       }
     } catch (error) {
       console.error("Erro ao enviar o formulário:", error);
-      onSuccess(false);
     }
   };
 

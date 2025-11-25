@@ -11,8 +11,8 @@ interface BiometricLinkSectionProps {
 
 export function BiometricLinkSection({
   patientName,
-}: BiometricLinkSectionProps) {
-  const [step, setStep] = useState<
+  }: BiometricLinkSectionProps) {
+    const [step, setStep] = useState<
     "waiting" | "scanning" | "success" | "error"
   >("waiting");
 
@@ -86,6 +86,38 @@ export function BiometricLinkSection({
               <p className="text-sm text-muted-foreground">
                 A identificação digital foi configurada com sucesso.
               </p>
+            </div>
+            <Button
+                onClick={() => setStep("waiting")}
+                size="lg"
+                className="w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Fingerprint className="mr-2 h-5 w-5" />
+                Tentar Novamente
+              </Button>
+          </>
+        )}
+
+        {step === "error" && (
+          <>
+            <div className="w-24 h-24 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+              {/* <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400" /> */}
+            </div>
+            <div className="text-center space-y-1">
+              <p className="font-bold text-lg text-red-600 dark:text-red-400">
+                Erro ao vincular biometria!
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Não foi possível configurar a biometria.
+              </p>
+              <Button
+                onClick={() => setStep("waiting")}
+                size="lg"
+                className="w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Fingerprint className="mr-2 h-5 w-5" />
+                Tentar Novamente
+              </Button>
             </div>
           </>
         )}
