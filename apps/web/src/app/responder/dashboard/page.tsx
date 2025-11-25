@@ -77,7 +77,7 @@ export default function ResponderPage() {
             <div>
               <h1 className="font-bold text-xl leading-none">IDLife</h1>
               <p className="text-xs text-red-100 font-medium uppercase tracking-wider">
-                Acesso de Emergência FUNCIONOU : {patientData?.patientName}
+                Acesso de Emergência
               </p>
             </div>
           </div>
