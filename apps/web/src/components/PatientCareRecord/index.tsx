@@ -1,50 +1,52 @@
-import { AlertCircle, Badge, Calendar, Clock, Plus } from "lucide-react"
-import { useState } from "react"
-import { Button } from "../ui/button"
-import { Card } from "../ui/card"
-import { Input } from "../ui/input"
+import { AlertCircle, Badge, Calendar, Clock, Plus } from "lucide-react";
+import { useState } from "react";
+import { Button } from "../ui/button";
+import { Card } from "../ui/card";
+import { Input } from "../ui/input";
 
 interface PatientCareRecordProps {
-  patient: any
+  patient: any;
 }
 
 interface CareVisit {
-  id: string
-  date: string
-  time: string
-  symptoms: string
-  temperature: string
-  bloodPressure: string
-  diagnosis: string
-  treatment: string
-  notes: string
+  id: string;
+  date: string;
+  time: string;
+  symptoms: string;
+  temperature: string;
+  bloodPressure: string;
+  diagnosis: string;
+  treatment: string;
+  notes: string;
 }
 
 interface Appointment {
-  id: string
-  date: string
-  time: string
-  reason: string
-  status: "agendada" | "confirmada" | "cancelada"
+  id: string;
+  date: string;
+  time: string;
+  reason: string;
+  status: "agendada" | "confirmada" | "cancelada";
 }
 
 export function PatientCareRecord({ patient }: PatientCareRecordProps) {
-  const [activeTab, setActiveTab] = useState<"atendimento" | "agendamentos" | "historico">("atendimento")
-  const [isAddingCare, setIsAddingCare] = useState(false)
-  const [isAddingAppointment, setIsAddingAppointment] = useState(false)
+  const [activeTab, setActiveTab] = useState<
+    "atendimento" | "agendamentos" | "historico"
+  >("atendimento");
+  const [isAddingCare, setIsAddingCare] = useState(false);
+  const [isAddingAppointment, setIsAddingAppointment] = useState(false);
   const [careVisits, setCareVisits] = useState<CareVisit[]>([
     {
       id: "1",
-      date: "22/11/2025",
-      time: "14:30",
-      symptoms: "Febre alta, dor de cabeça",
-      temperature: "39.2°C",
-      bloodPressure: "120/80",
-      diagnosis: "Gripe",
-      treatment: "Dipirona, repouso",
-      notes: "Paciente com sintomas gripais típicos",
+      date: "",
+      time: "",
+      symptoms: "",
+      temperature: "",
+      bloodPressure: "",
+      diagnosis: "",
+      treatment: "",
+      notes: "",
     },
-  ])
+  ]);
   const [formData, setFormData] = useState({
     symptoms: "",
     temperature: "",
@@ -52,12 +54,12 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
     diagnosis: "",
     treatment: "",
     notes: "",
-  })
+  });
   const [appointmentData, setAppointmentData] = useState({
     date: "",
     time: "",
     reason: "",
-  })
+  });
   const [appointments, setAppointments] = useState<Appointment[]>([
     {
       id: "1",
@@ -66,18 +68,21 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
       reason: "Retorno - Acompanhamento",
       status: "confirmada",
     },
-  ])
+  ]);
 
   const handleAddCareVisit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (formData.symptoms && formData.temperature) {
       const newVisit: CareVisit = {
         id: String(careVisits.length + 1),
         date: new Date().toLocaleDateString("pt-BR"),
-        time: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
+        time: new Date().toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         ...formData,
-      }
-      setCareVisits([newVisit, ...careVisits])
+      };
+      setCareVisits([newVisit, ...careVisits]);
       setFormData({
         symptoms: "",
         temperature: "",
@@ -85,28 +90,32 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
         diagnosis: "",
         treatment: "",
         notes: "",
-      })
-      setIsAddingCare(false)
+      });
+      setIsAddingCare(false);
     }
-  }
+  };
 
   const handleAddAppointment = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (appointmentData.date && appointmentData.time && appointmentData.reason) {
+    e.preventDefault();
+    if (
+      appointmentData.date &&
+      appointmentData.time &&
+      appointmentData.reason
+    ) {
       const newAppointment: Appointment = {
         id: String(appointments.length + 1),
         ...appointmentData,
         status: "agendada",
-      }
-      setAppointments([newAppointment, ...appointments])
+      };
+      setAppointments([newAppointment, ...appointments]);
       setAppointmentData({
         date: "",
         time: "",
         reason: "",
-      })
-      setIsAddingAppointment(false)
+      });
+      setIsAddingAppointment(false);
     }
-  }
+  };
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -116,7 +125,9 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
           Voltar
         </Button> */}
         <div className="flex-1">
-          <h2 className="text-3xl font-bold text-gray-900">{patient.patientName}</h2>
+          <h2 className="text-3xl font-bold text-gray-900">
+            {patient.patientName}
+          </h2>
           <p className="text-sm text-gray-600">CPF: {patient.cpf}</p>
         </div>
       </div>
@@ -168,7 +179,9 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
             </Button>
           ) : (
             <Card className="p-6 bg-green-50 border border-green-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Registrar Novo Atendimento</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Registrar Novo Atendimento
+              </h3>
               <form onSubmit={handleAddCareVisit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -177,7 +190,9 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
                     </label>
                     <textarea
                       value={formData.symptoms}
-                      onChange={(e) => setFormData({ ...formData, symptoms: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, symptoms: e.target.value })
+                      }
                       placeholder="Ex: Febre alta, dor de cabeça, tosse"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
                       rows={3}
@@ -193,37 +208,57 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
                         type="text"
                         placeholder="Ex: 39.2°C"
                         value={formData.temperature}
-                        onChange={(e) => setFormData({ ...formData, temperature: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            temperature: e.target.value,
+                          })
+                        }
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Pressão Arterial</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Pressão Arterial
+                      </label>
                       <Input
                         type="text"
                         placeholder="Ex: 120/80"
                         value={formData.bloodPressure}
-                        onChange={(e) => setFormData({ ...formData, bloodPressure: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            bloodPressure: e.target.value,
+                          })
+                        }
                       />
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Diagnóstico</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Diagnóstico
+                  </label>
                   <Input
                     type="text"
                     placeholder="Ex: Gripe"
                     value={formData.diagnosis}
-                    onChange={(e) => setFormData({ ...formData, diagnosis: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, diagnosis: e.target.value })
+                    }
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Tratamento</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tratamento
+                  </label>
                   <textarea
                     value={formData.treatment}
-                    onChange={(e) => setFormData({ ...formData, treatment: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, treatment: e.target.value })
+                    }
                     placeholder="Ex: Dipirona 500mg a cada 6h, repouso"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     rows={2}
@@ -231,10 +266,14 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Observações</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Observações
+                  </label>
                   <textarea
                     value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, notes: e.target.value })
+                    }
                     placeholder="Notas adicionais..."
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     rows={2}
@@ -242,10 +281,18 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
                 </div>
 
                 <div className="flex gap-3 pt-4">
-                  <Button type="submit" className="flex-1 bg-green-600 hover:bg-green-700 text-white">
+                  <Button
+                    type="submit"
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                  >
                     Salvar Atendimento
                   </Button>
-                  <Button type="button" onClick={() => setIsAddingCare(false)} variant="outline" className="flex-1">
+                  <Button
+                    type="button"
+                    onClick={() => setIsAddingCare(false)}
+                    variant="outline"
+                    className="flex-1"
+                  >
                     Cancelar
                   </Button>
                 </div>
@@ -256,7 +303,9 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
           {/* Últimos Atendimentos */}
           {careVisits.length > 0 && (
             <div className="space-y-3">
-              <h3 className="font-semibold text-gray-900">Últimos Atendimentos</h3>
+              <h3 className="font-semibold text-gray-900">
+                Últimos Atendimentos
+              </h3>
               {careVisits.slice(0, 3).map((visit) => (
                 <Card key={visit.id} className="p-4 border border-gray-200">
                   <div className="flex items-start justify-between mb-3">
@@ -282,7 +331,9 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
                     </div>
                     {visit.diagnosis && (
                       <div>
-                        <p className="text-gray-600 font-medium">Diagnóstico:</p>
+                        <p className="text-gray-600 font-medium">
+                          Diagnóstico:
+                        </p>
                         <p className="text-gray-900">{visit.diagnosis}</p>
                       </div>
                     )}
@@ -312,7 +363,9 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
             </Button>
           ) : (
             <Card className="p-6 bg-blue-50 border border-blue-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Agendar Nova Consulta</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Agendar Nova Consulta
+              </h3>
               <form onSubmit={handleAddAppointment} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -322,7 +375,12 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
                     <Input
                       type="date"
                       value={appointmentData.date}
-                      onChange={(e) => setAppointmentData({ ...appointmentData, date: e.target.value })}
+                      onChange={(e) =>
+                        setAppointmentData({
+                          ...appointmentData,
+                          date: e.target.value,
+                        })
+                      }
                       required
                     />
                   </div>
@@ -333,7 +391,12 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
                     <Input
                       type="time"
                       value={appointmentData.time}
-                      onChange={(e) => setAppointmentData({ ...appointmentData, time: e.target.value })}
+                      onChange={(e) =>
+                        setAppointmentData({
+                          ...appointmentData,
+                          time: e.target.value,
+                        })
+                      }
                       required
                     />
                   </div>
@@ -346,12 +409,20 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
                     type="text"
                     placeholder="Ex: Acompanhamento, Retorno"
                     value={appointmentData.reason}
-                    onChange={(e) => setAppointmentData({ ...appointmentData, reason: e.target.value })}
+                    onChange={(e) =>
+                      setAppointmentData({
+                        ...appointmentData,
+                        reason: e.target.value,
+                      })
+                    }
                     required
                   />
                 </div>
                 <div className="flex gap-3 pt-4">
-                  <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button
+                    type="submit"
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                  >
                     Agendar
                   </Button>
                   <Button
@@ -370,7 +441,9 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
           {/* Agendamentos */}
           {appointments.length > 0 && (
             <div className="space-y-3">
-              <h3 className="font-semibold text-gray-900">Consultas Agendadas</h3>
+              <h3 className="font-semibold text-gray-900">
+                Consultas Agendadas
+              </h3>
               {appointments.map((apt) => (
                 <Card key={apt.id} className="p-4 border border-gray-200">
                   <div className="flex items-start justify-between">
@@ -408,7 +481,9 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
 
       {activeTab === "historico" && (
         <div className="space-y-3">
-          <h3 className="font-semibold text-gray-900">Histórico Completo de Atendimentos</h3>
+          <h3 className="font-semibold text-gray-900">
+            Histórico Completo de Atendimentos
+          </h3>
           {careVisits.length > 0 ? (
             careVisits.map((visit) => (
               <Card key={visit.id} className="p-4 border border-gray-200">
@@ -429,7 +504,9 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium">Diagnóstico</p>
-                    <p className="text-gray-900">{visit.diagnosis || "Não preenchido"}</p>
+                    <p className="text-gray-900">
+                      {visit.diagnosis || "Não preenchido"}
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -443,5 +520,5 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
         </div>
       )}
     </div>
-  )
+  );
 }

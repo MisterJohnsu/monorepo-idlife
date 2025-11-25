@@ -88,6 +88,7 @@ export default class EmployeeController{
     public async employeeCreate({ request, response }: HttpContext) {
         try {
             const { data } = request.all()
+            console.log(data);
             const employee = await this.employeeService.create(data)
             return response.created({
               message: 'Funcionario cadastrado com sucesso',

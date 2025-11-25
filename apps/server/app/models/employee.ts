@@ -24,12 +24,11 @@ export default class Employees extends BaseModel {
     @column()
     declare position: string
     
-
     @column()
-    declare crm?: string
+    declare crm?: string | null
     
     @column()
-    declare specialty?: string
+    declare specialty?: string | null
 
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime

@@ -21,7 +21,7 @@ import { useEffect } from "react";
 // 1. Schema Atualizado com Validação Condicional (.superRefine)
 const formSchema = z
   .object({
-    name: z.string().min(2, "Nome inválido"),
+    employeeName: z.string().min(2, "Nome inválido"),
     email: z.string().email("Email inválido"),
     password: z.string().min(6, "Senha inválida"),
     phone: z.string().min(10, "Telefone inválido"),
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
   } = useForm<RegistrationEmployeeData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      employeeName: "",
       crm: "",
       email: "",
       specialty: "",
@@ -89,8 +89,7 @@ export default function AdminDashboard() {
   const handleFormSubmit = async (data: RegistrationEmployeeData) => {
     try {
       // Envia os dados para a API
-      await api.post("api/employees/register", data);
-      alert("Profissional cadastrado com sucesso!");
+      await api.post("api/employees/register", { data });
       reset();
     } catch (error) {
       console.error("Erro ao enviar o formulário:", error);
@@ -169,15 +168,15 @@ export default function AdminDashboard() {
             >
               {/* Nome */}
               <div className="space-y-2">
-                <Label htmlFor="name">Nome Completo</Label>
+                <Label htmlFor="employeeName">Nome Completo</Label>
                 <Input
-                  id="name"
+                  id="employeeName"
                   placeholder="EX: Dr. João Silva"
-                  {...register("name")}
+                  {...register("employeeName")}
                 />
-                {errors.name && (
+                {errors.employeeName && (
                   <span className="text-red-500 text-xs">
-                    {errors.name.message}
+                    {errors.employeeName.message}
                   </span>
                 )}
               </div>
