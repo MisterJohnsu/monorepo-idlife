@@ -26,6 +26,7 @@ app.ready(() => {
 
     socket.on('listenArduino', (message) => {
       console.log('Mensagem do Arduino:', message)
+      socket.emit('listenArduino', { message: 'Mensagem recebida no servidor: ' + message })
     })
   })
 })

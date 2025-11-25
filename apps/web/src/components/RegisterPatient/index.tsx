@@ -99,11 +99,17 @@ export function RegisterPatient({
     }
   };
 
+  const messageArduino = socket.on('listenArduino', (data) => {
+    console.log('Mensagem do Arduino recebida no cliente:', data);
+  });
+
   useEffect(() => {
     socket.on('connect', () => {
       console.log('Conectado ao servidor de WebSocket');
     });
-  }, [])
+    
+    console.log('messageArduino ===> ', messageArduino)
+  }, [messageArduino])
 
   return (
     <div className="space-y-6">
