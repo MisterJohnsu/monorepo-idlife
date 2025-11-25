@@ -15,12 +15,24 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Lock, Mail, Stethoscope, ArrowRight, AlertCircle } from "lucide-react";
+import {
+  Lock,
+  Mail,
+  Stethoscope,
+  ArrowRight,
+  AlertCircle,
+  Eye, // Importado
+  EyeOff, // Importado
+} from "lucide-react";
 
 export default function EmployeeLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Estado para controlar a visibilidade da senha
+  const [showPassword, setShowPassword] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -31,11 +43,14 @@ export default function EmployeeLoginPage() {
 
     try {
       // Rota de login de funcionários no Adonis
-      const response = await fetch("http://localhost:3333/api/login-employee", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "http://localhost:3333/api/employees/login-employee",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
 
@@ -51,7 +66,7 @@ export default function EmployeeLoginPage() {
             router.push("/admin/dashboard");
             break;
           case "medico":
-            router.push("/medico/dashboard");
+            router.push("/doctor/dashboard");
             break;
           case "socorrista":
             router.push("/responder/dashboard");
@@ -98,6 +113,7 @@ export default function EmployeeLoginPage() {
                 </div>
               )}
 
+              {/* Email */}
               <div className="space-y-2">
                 <Label htmlFor="email">Email Corporativo</Label>
                 <div className="relative">
@@ -114,18 +130,33 @@ export default function EmployeeLoginPage() {
                 </div>
               </div>
 
+              {/* Senha com Botão de Mostrar/Ocultar */}
               <div className="space-y-2">
                 <Label htmlFor="password">Senha</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+
                   <Input
                     id="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"} // Alterna o tipo dinamicamente
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-9"
+                    className="pl-9 pr-10" // pl-9 para o ícone do cadeado, pr-10 para o olho
                   />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
               </div>
             </CardContent>
@@ -138,6 +169,16 @@ export default function EmployeeLoginPage() {
               >
                 {isLoading ? "Verificando..." : "Acessar Painel"}
               </Button>
+
+              <div className="text-center text-sm text-muted-foreground">
+                Ainda não tem cadastro?{" "}
+                <Link
+                  href="/register"
+                  className="text-primary hover:underline font-medium"
+                >
+                  Solicitar Acesso
+                </Link>
+              </div>
 
               <div className="text-center">
                 <Link

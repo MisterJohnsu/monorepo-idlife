@@ -5,15 +5,15 @@ export default class Employees extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('employees_id').primary().unique()
+      table.increments('employee_id').primary().unique()
       
-      table.string('position').notNullable()
-      table.string('crm').notNullable().unique()
       table.string('employee_name').notNullable()
       table.string('email').notNullable().unique()
       table.string('password').notNullable()
-      table.string('specialty').notNullable()
       table.string('phone').notNullable()
+      table.string('position').notNullable()
+      table.string('specialty').nullable()
+      table.string('crm').nullable().unique()
 
       table.timestamps(true, true)
     })

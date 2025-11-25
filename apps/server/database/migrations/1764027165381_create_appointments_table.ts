@@ -7,27 +7,25 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('appointment_id').primary().notNullable()
 
-      // Vínculo com Pacientes (PK: paciente_id)
-      table
+     table
         .integer('patient_id')
         .unsigned()
-        .notNullable()
         .references('patient_id')
         .inTable('patients')
         .onDelete('CASCADE')
 
-      // Vínculo com Médicos (Tabela: doctors, PK: medico_id)
+      // FK para Funcionários (Médicos)
+      // A tabela 'employees' JÁ EXISTE agora, então não dará erro
       table
         .integer('employee_id')
         .unsigned()
-        .notNullable()
         .references('employee_id')
-        .inTable('employees') 
+        .inTable('employees')
         .onDelete('CASCADE')
 
-      // Dados da consulta
-      table.date('dtConsulta').notNullable()
-      table.string('observations').nullable()
+      table.dateTime('appointment_date').notNullable()
+      table.text('diagnosis').nullable()
+      table.text('notes').nullable()
 
       table.timestamps(true, true)
     })

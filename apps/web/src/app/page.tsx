@@ -145,10 +145,12 @@ export default function LandingPage() {
                   <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 mx-auto flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <Stethoscope className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <CardTitle className="mt-4">Funcionários</CardTitle>
+                  <CardTitle className="mt-4">
+                    Profissionais Cadastrados
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center text-sm text-muted-foreground">
-                  Funcionários Autorizados
+                  Profissionais cadastrados ao IdLife
                 </CardContent>
               </Card>
             </Link>

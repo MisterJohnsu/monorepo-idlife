@@ -12,10 +12,13 @@ export default class Appointments extends BaseModel {
     declare employeeId: number
 
     @column.dateTime()
-    declare dtConsulta: DateTime
+    declare appointment_date: DateTime
     
     @column()
-    declare observations?: string
+    declare diagnosis?: string
+
+    @column()
+    declare notes?: string
 
     @column.dateTime({ autoCreate: true, columnName: 'created_at', serializeAs: 'created_at' })
   declare created_at: DateTime
