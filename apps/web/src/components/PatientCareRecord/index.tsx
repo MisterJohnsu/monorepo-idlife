@@ -4,10 +4,6 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Input } from "../ui/input";
 
-interface PatientCareRecordProps {
-  patient: any;
-}
-
 interface CareVisit {
   id: string;
   date: string;
@@ -26,6 +22,10 @@ interface Appointment {
   time: string;
   reason: string;
   status: "agendada" | "confirmada" | "cancelada";
+}
+
+interface PatientCareRecordProps {
+  patient: any;
 }
 
 export function PatientCareRecord({ patient }: PatientCareRecordProps) {

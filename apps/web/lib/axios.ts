@@ -6,3 +6,10 @@ export const api = axios.create({
     'Content-Type': 'application/json'
   },
 })
+
+export const bridgeApi = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_BRIDGE_API_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  },
+})
