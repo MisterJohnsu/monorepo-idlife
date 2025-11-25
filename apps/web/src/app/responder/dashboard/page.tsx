@@ -1,37 +1,70 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { api, bridgeApi } from "@/lib/axios";
 import {
+  AlertCircle,
   Fingerprint,
-  ShieldAlert,
   Loader2,
   Search,
-  AlertCircle,
+  ShieldAlert,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 
 export default function ResponderPage() {
   const router = useRouter();
+  const socket = io("http://localhost:3333");
   const [isScanning, setIsScanning] = useState(false);
   const [scanStatus, setScanStatus] = useState<
     "idle" | "scanning" | "success" | "error"
   >("idle");
+  const [messageArduino, setMessageArduino] = useState("");
+  const [patientData, setPatientData] = useState<any>(null);
 
-  const handleScan = () => {
-    setIsScanning(true);
-    setScanStatus("scanning");
-
-    // Simulate biometric scanning process
-    setTimeout(() => {
-      setScanStatus("success");
-      setTimeout(() => {
-        // Redirect to the mock profile
-        router.push("/p/joao-silva");
-      }, 1000);
-    }, 2500);
+  const handleScan = async () => {
+    try {
+      setIsScanning(true);
+      setScanStatus("scanning");
+      await bridgeApi.post("/identificar");
+    } catch (error) {
+      console.error("Erro ao iniciar a captura biométrica:", error);
+      setScanStatus("error");
+    }
   };
+
+  const scanningApi = async (biometricId: string) => {
+    try {
+      const response = await api.post('api/patients/search', {
+        biometricId,
+        searchBiometric: true,
+      })
+      if (response.status === 200) {
+        setPatientData(response.data.patients[0]);
+        setScanStatus("success");
+      }
+    } catch (error) {
+      console.error("Erro ao buscar paciente:", error);
+      setScanStatus("error");
+    }
+  }
+
+  useEffect(() => {
+    const handleListenArduino = (data: any) => {
+      setMessageArduino(data.message);
+      if (data.message.includes("Identificado OK: ID")) {
+        const replaceData = data.message.replace("Identificado OK: ID", "").trim();
+        const biometricId = parseInt(replaceData, 10);
+        scanningApi(String(biometricId));
+      }
+    };
+    socket.on("listenArduino", handleListenArduino);
+    return () => {
+      socket.off("listenArduino", handleListenArduino);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 flex flex-col">
@@ -42,7 +75,7 @@ export default function ResponderPage() {
             <div>
               <h1 className="font-bold text-xl leading-none">IDLife</h1>
               <p className="text-xs text-red-100 font-medium uppercase tracking-wider">
-                Acesso de Emergência
+                Acesso de Emergência FUNCIONOU : {patientData?.patientName}
               </p>
             </div>
           </div>
@@ -72,13 +105,12 @@ export default function ResponderPage() {
           >
             {/* Scanner Visualization */}
             <div
-              className={`w-64 h-64 mx-auto rounded-3xl border-4 flex items-center justify-center transition-all duration-500 ${
-                scanStatus === "scanning"
+              className={`w-64 h-64 mx-auto rounded-3xl border-4 flex items-center justify-center transition-all duration-500 ${scanStatus === "scanning"
                   ? "border-blue-500 bg-blue-950/30 shadow-[0_0_50px_rgba(59,130,246,0.5)]"
                   : scanStatus === "success"
                     ? "border-green-500 bg-green-950/30 shadow-[0_0_50px_rgba(34,197,94,0.5)]"
                     : "border-slate-700 bg-slate-900 hover:border-slate-500 hover:bg-slate-800"
-              }`}
+                }`}
             >
               {scanStatus === "idle" && (
                 <Fingerprint
@@ -118,7 +150,7 @@ export default function ResponderPage() {
               {scanStatus === "scanning" && (
                 <div className="flex items-center justify-center gap-3 text-blue-400 animate-pulse">
                   <Loader2 className="w-6 h-6 animate-spin" />
-                  <span className="text-xl font-medium">Lendo Digital...</span>
+                  <span className="text-xl font-medium">{messageArduino ?  messageArduino : 'Lendo Digital...'}</span>
                 </div>
               )}
               {scanStatus === "success" && (
