@@ -1,29 +1,9 @@
 import Patient from '#models/patient'
 import Ws from './Ws.ts'
 
-interface CreatePatientDTO {
-    pacienteName: string
-    email: string
-    cpf: string
-    password: string
-    telefone: string
-    dtNascimento: string
-    sexo: string
-    tipoSanguineo: string
-    convenio?: string
-    alergia?: string
-    aparelho?: string
-    medicamentos?: string
-    info_adicional?: string
-    doencas?: string
-    telefone_ctt_emergencia?: string
-    ctt_emergencia_name?: string
-    biometricId?: number
-}
-
 export class PatientService {
 
-    public async create(data: CreatePatientDTO, registerBiometric?: string | null) {
+    public async create(data: any, registerBiometric?: string | null) {
         try {
             if (registerBiometric) {
                 const socket = Ws.io
@@ -41,7 +21,27 @@ export class PatientService {
                 return patient
             }
 
-            const patient = await Patient.create({ ...data })
+            const dataCreatePatient = {
+                additionalInfo: data.additionalInfo,
+                address: { city: data.city, state: data.state, street: data.address },
+                allergies: data.allergies,
+                birthDate: data.birthDate,
+                bloodType: data.bloodType,
+                cpf: data.cpf,
+                email: data.email,
+                emergencyName: data.emergencyName,
+                emergencyPhone: data.emergencyPhone,
+                gender: data.gender,
+                insurance: data.insurance,
+                medicalDevices: data.medicalDevices,
+                medications: data.medications,
+                patientName: data.patientName,
+                phone: data.phone,
+                password: 'defaultPassword123',
+            }
+
+            const patient = await Patient.create({ ...dataCreatePatient })
+            // const patient = await Patient.create({ ...data })
             return patient
         } catch (error) {
             throw error
@@ -53,20 +53,30 @@ export class PatientService {
             const patient = await Patient.findOrFail(id)
             patient.merge(dados)
             await patient.save()
-            console.log(`[PacienteService] Sucesso: Paciente ${patient.patientName} atualizado.`)
+            console.log(`[patienteService] Sucesso: patiente ${patient.patientName} atualizado.`)
             return patient
         } catch (error) {
-            console.error('[PacienteService] Erro ao atualizar paciente:', error)
+            console.error('[patienteService] Erro ao atualizar patiente:', error)
             throw error // Repassa o erro para quem chamou
         }
     }
 
-    public async show(id: number) {
+    public async showPatient(cpfOrName: string) {
         try {
-            const patient = await Patient.findOrFail(id)
-            return patient
+            let cpf
+            let name
+            let patients
+
+            if (/^\d{11}$/.test(cpfOrName)) {
+                cpf = cpfOrName
+                patients = await Patient.query().where('cpf', cpf)
+            } else {
+                name = cpfOrName
+                patients = await Patient.query().where('patientName', 'like', `%${name}%`)
+            }
+            return patients
         } catch (error) {
-            console.error('[PacienteService] Erro ao buscar paciente:', error)
+            console.error('[patienteService] Erro ao buscar patiente:', error)
             throw error // Repassa o erro para quem chamou
         }
     }
@@ -75,10 +85,10 @@ export class PatientService {
         try {
             const patient = await Patient.findOrFail(id)
             await patient.delete()
-            console.log(`[PacienteService] Sucesso: Paciente ID ${id} deletado.`)
+            console.log(`[patienteService] Sucesso: patiente ID ${id} deletado.`)
             return true
         } catch (error) {
-            console.error('[PacienteService] Erro ao deletar paciente:', error)
+            console.error('[patienteService] Erro ao deletar patiente:', error)
             throw error // Repassa o erro para quem chamou
         }
     }

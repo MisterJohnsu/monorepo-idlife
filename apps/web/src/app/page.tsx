@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertCircle,
-  Ambulance,
   CheckCircle,
   Clock,
   Fingerprint,
@@ -10,7 +9,6 @@ import {
   Shield,
   Stethoscope,
   User,
-  UserCog,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -18,7 +16,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <header className="border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between max-w-7xl">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
@@ -107,7 +105,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="relative">
-            <div className="aspect-square rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/20 flex items-center justify-center p-12">
+            <div className="aspect-square rounded-2xl bg-linear-gradient-to-br from-primary/10 via-accent/5 to-secondary/20 flex items-center justify-center p-12">
               <div className="w-full max-w-sm aspect-square bg-background rounded-xl shadow-2xl border border-border p-8 flex flex-col items-center justify-center gap-6 text-center">
                 <div className="w-32 h-32 rounded-full bg-primary/5 flex items-center justify-center animate-pulse">
                   <Fingerprint className="w-20 h-20 text-primary" />
@@ -130,46 +128,34 @@ export default function LandingPage() {
 
       {/* Role Access Section */}
       <section id="acesso" className="bg-secondary/30 py-20">
-        <div className="container mx-auto px-4 max-w-7xl">
+        <div className="container mx-auto px-4 max-w-3xl">
           <div className="text-center mb-12 space-y-4">
             <h2 className="text-3xl md:text-4xl font-bold text-balance">
               Acesso ao Sistema
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto text-pretty">
               Selecione seu perfil para entrar no IDLife
             </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-6">
-            <Link href="/admin" className="block group">
-              <Card className="h-full transition-all hover:border-primary hover:shadow-lg cursor-pointer">
-                <CardHeader className="text-center pt-8">
-                  <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 mx-auto flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <UserCog className="w-8 h-8 text-slate-600 dark:text-slate-300" />
-                  </div>
-                  <CardTitle className="mt-4">Administrador</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center text-sm text-muted-foreground">
-                  Gerenciamento de profissionais e sistema
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/doctor" className="block group">
+          <div className="grid md:grid-cols-2 gap-8">
+            <Link href="/EmployeeLogin" className="block group">
               <Card className="h-full transition-all hover:border-primary hover:shadow-lg cursor-pointer">
                 <CardHeader className="text-center pt-8">
                   <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 mx-auto flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <Stethoscope className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <CardTitle className="mt-4">Médico</CardTitle>
+                  <CardTitle className="mt-4">
+                    Profissionais Cadastrados
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center text-sm text-muted-foreground">
-                  Cadastro de pacientes e vínculo biométrico
+                  Profissionais cadastrados ao IdLife
                 </CardContent>
               </Card>
             </Link>
 
-            <Link href="/patient" className="block group">
+            <Link href="/PatientLogin" className="block group">
               <Card className="h-full transition-all hover:border-primary hover:shadow-lg cursor-pointer">
                 <CardHeader className="text-center pt-8">
                   <div className="w-16 h-16 rounded-2xl bg-green-100 dark:bg-green-900/30 mx-auto flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -179,20 +165,6 @@ export default function LandingPage() {
                 </CardHeader>
                 <CardContent className="text-center text-sm text-muted-foreground">
                   Carteirinha digital e agendamentos
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/responder" className="block group">
-              <Card className="h-full transition-all hover:border-primary hover:shadow-lg cursor-pointer">
-                <CardHeader className="text-center pt-8">
-                  <div className="w-16 h-16 rounded-2xl bg-red-100 dark:bg-red-900/30 mx-auto flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <Ambulance className="w-8 h-8 text-red-600 dark:text-red-400" />
-                  </div>
-                  <CardTitle className="mt-4">Socorrista</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center text-sm text-muted-foreground">
-                  Identificação e acesso de emergência
                 </CardContent>
               </Card>
             </Link>
@@ -263,7 +235,7 @@ export default function LandingPage() {
               </h2>
               <div className="space-y-6">
                 <div className="flex gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
                     <Clock className="w-6 h-6 text-accent" />
                   </div>
                   <div className="space-y-2">
@@ -277,7 +249,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
                     <Shield className="w-6 h-6 text-accent" />
                   </div>
                   <div className="space-y-2">
@@ -290,7 +262,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
                     <AlertCircle className="w-6 h-6 text-accent" />
                   </div>
                   <div className="space-y-2">
@@ -304,7 +276,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="relative">
-              <div className="aspect-[4/5] rounded-2xl bg-gradient-to-br from-accent/10 via-primary/5 to-secondary/20 flex items-center justify-center p-8">
+              <div className="aspect-4/5 rounded-2xl bg-linear-gradient-to-br from-accent/10 via-primary/5 to-secondary/20 flex items-center justify-center p-8">
                 <Card className="w-full border-2 shadow-xl">
                   <CardContent className="pt-6 space-y-4">
                     <div className="flex items-center gap-3 pb-4 border-b">

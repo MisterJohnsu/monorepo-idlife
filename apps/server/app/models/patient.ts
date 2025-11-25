@@ -5,7 +5,7 @@ export default class Patient extends BaseModel {
 
   public static primaryKey = 'pacienteId'
 
-  @column({ isPrimary: true })
+  @column({ isPrimary: true , columnName: 'patient_id' })
   declare patientId: number
 
   // Campos obrigatórios

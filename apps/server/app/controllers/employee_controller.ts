@@ -1,7 +1,8 @@
-import { PatientService } from '#services/patient_sevice'
+import { PatientService } from '#services/patient_service'
+import { EmployeeService } from '#services/employee_service'
 import type { HttpContext } from '@adonisjs/core/http'
 
-export default class DoctorController{
+export default class EmployeeController{
 
     private patientService = new PatientService()
 
@@ -63,15 +64,38 @@ export default class DoctorController{
         }
     }
 
-    public async patientShow({ params, response }: HttpContext) {
+    public async patientShow({ request, response }: HttpContext) {
         try {
-            const patient = await this.patientService.show(params.id)
+            const { data } = request.all()
+            const patients = await this.patientService.showPatient(data)
+
+            console.log("Paciente encontrado:", patients);
+
             return response.ok({
-                patient
+                patients
             })
         } catch (error) {
             return response.badRequest({ 
               error: 'Erro ao buscar paciente', 
+              details: error.message 
+            })
+        }
+    }
+
+    //Funcionarios
+    employeeService = new EmployeeService()
+
+    public async employeeCreate({ request, response }: HttpContext) {
+        try {
+            const { data } = request.all()
+            const employee = await this.employeeService.create(data)
+            return response.created({
+              message: 'Funcionario cadastrado com sucesso',
+              employee
+            })
+        } catch (error) {
+            return response.badRequest({ 
+              error: 'Erro ao cadastrar funcionario', 
               details: error.message 
             })
         }

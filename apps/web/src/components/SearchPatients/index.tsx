@@ -1,111 +1,88 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { api } from "@/lib/axios"
-import { Calendar, MapPin, Phone, Search, User } from "lucide-react"
-import { useState } from "react"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { api } from "@/lib/axios";
+import { Calendar, Edit, MapPin, Phone, Search, Stethoscope, User } from "lucide-react";
+import { DateTime } from "luxon";
+import { useState } from "react";
 
 interface Patient {
-  id: string
-  name: string
-  cpf: string
-  birthDate: string
-  phone: string
-  email: string
-  address: string
-  city: string
-  status: "ativo" | "inativo"
-  lastVisit: string
+  patientId: string;
+  patientName: string;
+  cpf: string;
+  birthDate: string;
+  phone: string;
+  email: string;
+  address: { street: string; number?: string, city: string, state: string };
+  gender: string;
+  bloodType: string;
+  emergencyPhone: string;
+  emergencyName: string;
+  additionalInfo: string;
+  allergies: string;
+  insurance: string;
+  medications: string;
+  status: "ativo" | "inativo";
+  lastVisit: string;
 }
 
-// Dados de exemplo
-const mockPatients: Patient[] = [
-  {
-    id: "1",
-    name: "João Silva Santos",
-    cpf: "123.456.789-00",
-    birthDate: "15/03/1985",
-    phone: "(11) 98765-4321",
-    email: "joao.silva@email.com",
-    address: "Rua das Flores, 123",
-    city: "São Paulo, SP",
-    status: "ativo",
-    lastVisit: "22/11/2025",
-  },
-  {
-    id: "2",
-    name: "Maria Oliveira Costa",
-    cpf: "987.654.321-11",
-    birthDate: "28/07/1992",
-    phone: "(11) 99876-5432",
-    email: "maria.oliveira@email.com",
-    address: "Avenida Paulista, 456",
-    city: "São Paulo, SP",
-    status: "ativo",
-    lastVisit: "20/11/2025",
-  },
-  {
-    id: "3",
-    name: "Carlos Mendes Ferreira",
-    cpf: "456.789.123-22",
-    birthDate: "10/05/1978",
-    phone: "(11) 97654-3210",
-    email: "carlos.mendes@email.com",
-    address: "Rua Augusta, 789",
-    city: "São Paulo, SP",
-    status: "inativo",
-    lastVisit: "05/10/2025",
-  },
-]
+interface SearchPatientsProps {
+  onSelectPatient?: (patient: Patient) => void;
+}
 
-export function SearchPatients() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [searchResults, setSearchResults] = useState<Patient[]>([])
-  const [hasSearched, setHasSearched] = useState(false)
-  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null)
+export function SearchPatients({ onSelectPatient }: SearchPatientsProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<Patient[]>([]);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 
   async function handleSearch(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
+
+    if (searchTerm.trim().length <= 0) {
+      setSearchResults([]);
+      setHasSearched(false);
+      setSelectedPatient(null);
+      return;
+    }
+
     try {
-      const { data } = await api.get('patients/search', {
-        data: {
-          searchTerm: searchTerm.trim()
-        }
-      })
-      setSearchResults(data)
-
-      const results = data.filter(
+      const { data } = await api.post('api/patients/search', {
+        data: searchTerm
+      });
+      const results = data.patients.filter(
         (patient: any) =>
-          patient.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          patient.cpf.includes(searchTerm.replace(/\D/g, "")),
-      )
+          patient.patientName
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          patient.cpf.includes(searchTerm.replace(/\D/g, ""))
+      );
 
-      if (!searchTerm.trim()) {
-        setSearchResults([])
-        return
-      }
-
-      setSearchResults(results)
-      setHasSearched(true)
-      setSelectedPatient(null)
+      setSearchResults(results);
+      setHasSearched(true);
+      setSelectedPatient(null);
     } catch (error) {
-      console.error('Erro ao buscar pacientes:', error)
+      console.error("Erro ao buscar pacientes:", error);
     }
   }
 
   const handleSelectPatient = (patient: Patient) => {
-    console.log("Paciente selecionado:", patient)
-    setSelectedPatient(patient)
+    setSelectedPatient(patient);
+  };
+
+  const handleAccessRecord = () => {
+    if (selectedPatient) {
+      onSelectPatient?.(selectedPatient);
+    }
   }
 
   return (
     <div className="space-y-6">
-      {/* Formulário de Busca */}
       <Card className="p-6 shadow-lg border-0 bg-white">
         <form onSubmit={handleSearch} className="space-y-4">
           <div className="flex flex-col sm:flex-row gap-3">
@@ -119,21 +96,24 @@ export function SearchPatients() {
                 className="pl-10 h-12 text-base border-blue-200 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white h-12 px-8 font-semibold">
+            <Button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white h-12 px-8 font-semibold"
+            >
               Buscar
             </Button>
           </div>
-          <p className="text-sm text-gray-500">Busque pelo nome completo ou pelo CPF (com ou sem máscara)</p>
+          <p className="text-sm text-gray-500">
+            Busque pelo nome completo ou pelo CPF (com ou sem máscara)
+          </p>
         </form>
       </Card>
 
-      {/* Resultados da Busca */}
       {hasSearched && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Lista de Pacientes */}
           <div className="lg:col-span-1">
             <Card className="shadow-lg border-0 overflow-hidden">
-              <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4">
+              <div className="bg-linear-gradient-to-r from-blue-600 bg-blue-600  to-blue-700 p-4">
                 <h2 className="text-white font-semibold flex items-center gap-2">
                   <User className="h-5 w-5" />
                   Resultados ({searchResults.length})
@@ -144,21 +124,35 @@ export function SearchPatients() {
                 <div className="divide-y max-h-96 overflow-y-auto">
                   {searchResults.map((patient) => (
                     <button
-                      key={patient.id}
+                      key={patient.patientId}
                       onClick={() => handleSelectPatient(patient)}
-                      className={`w-full text-left p-4 hover:bg-blue-50 transition-colors ${selectedPatient?.id === patient.id ? "bg-blue-100 border-l-4 border-blue-600" : ""
+                      className={`w-full text-left p-4 hover:bg-blue-50 transition-colors ${selectedPatient?.patientId === patient.patientId
+                          ? "bg-blue-100 border-l-4 border-blue-600"
+                          : ""
                         }`}
                     >
-                      <div className="font-semibold text-gray-900 text-sm mb-1">{patient.name}</div>
-                      <div className="text-xs text-gray-600 mb-2">CPF: {patient.cpf}</div>
+                      <div className="font-semibold text-gray-900 text-sm mb-1">
+                        {patient.patientName}
+                      </div>
+                      <div className="text-xs text-gray-600 mb-2">
+                        CPF: {patient.cpf}
+                      </div>
                       <div className="flex justify-between items-center">
                         <Badge
-                          variant={patient.status === "ativo" ? "default" : "secondary"}
-                          className={patient.status === "ativo" ? "bg-green-600" : "bg-gray-400"}
+                          variant={
+                            patient.status === "ativo" ? "default" : "secondary"
+                          }
+                          className={
+                            patient.status === "ativo"
+                              ? "bg-green-600"
+                              : "bg-gray-400"
+                          }
                         >
                           {patient.status === "ativo" ? "Ativo" : "Inativo"}
                         </Badge>
-                        <span className="text-xs text-gray-500">Vis: {patient.lastVisit.split("/")[0]}</span>
+                        <span className="text-xs text-gray-500">
+                          {patient.lastVisit ? patient.lastVisit.split("/"[0]) : ''}
+                        </span>
                       </div>
                     </button>
                   ))}
@@ -172,72 +166,96 @@ export function SearchPatients() {
             </Card>
           </div>
 
-          {/* Ficha do Paciente */}
           <div className="lg:col-span-2">
             {selectedPatient ? (
               <Card className="shadow-lg border-0 overflow-hidden">
-                <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6">
-                  <h3 className="text-white text-2xl font-bold">{selectedPatient.name}</h3>
-                  <p className="text-blue-100 text-sm mt-1">CPF: {selectedPatient.cpf}</p>
+                <div className="bg-linear-gradient-to-r bg-blue-600 from-blue-600 to-blue-700 p-6">
+                  <h3 className="text-white text-2xl font-bold">
+                    {selectedPatient.patientName}
+                  </h3>
+                  <p className="text-blue-100 text-sm mt-1">
+                    CPF: {selectedPatient.cpf}
+                  </p>
                 </div>
 
                 <div className="p-6 space-y-6">
-                  {/* Informações Pessoais */}
                   <section>
-                    <h4 className="font-semibold text-gray-900 mb-4 text-lg">Informações Pessoais</h4>
+                    <h4 className="font-semibold text-gray-900 mb-4 text-lg">
+                      Informações Pessoais
+                    </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <InfoField icon={Calendar} label="Data de Nascimento" value={selectedPatient.birthDate} />
-                      <InfoField icon={Phone} label="Telefone" value={selectedPatient.phone} />
+                      <InfoField
+                        icon={Calendar}
+                        label="Data de Nascimento"
+                        value={DateTime.fromISO(selectedPatient.birthDate).toLocaleString(DateTime.DATE_MED)}
+                      />
+                      <InfoField
+                        icon={Phone}
+                        label="Telefone"
+                        value={selectedPatient.phone}
+                      />
                       <div className="sm:col-span-2">
                         <InfoField
                           icon={MapPin}
                           label="Endereço"
-                          value={`${selectedPatient.address}, ${selectedPatient.city}`}
+                          value={`${selectedPatient.address.street}, ${selectedPatient.address.city}`}
                         />
                       </div>
                     </div>
                   </section>
 
-                  {/* Informações de Contato */}
                   <section className="border-t pt-6">
-                    <h4 className="font-semibold text-gray-900 mb-4 text-lg">Informações de Contato</h4>
+                    <h4 className="font-semibold text-gray-900 mb-4 text-lg">
+                      Informações de Contato
+                    </h4>
                     <div className="space-y-3">
                       <div className="bg-gray-50 p-3 rounded-lg">
                         <p className="text-xs text-gray-600">Email</p>
-                        <p className="text-gray-900 font-medium">{selectedPatient.email}</p>
+                        <p className="text-gray-900 font-medium">
+                          {selectedPatient.email}
+                        </p>
                       </div>
                     </div>
                   </section>
 
-                  {/* Status */}
                   <section className="border-t pt-6">
-                    <h4 className="font-semibold text-gray-900 mb-4 text-lg">Status e Histórico</h4>
+                    <h4 className="font-semibold text-gray-900 mb-4 text-lg">
+                      Status e Histórico
+                    </h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <p className="text-xs text-gray-600 mb-2">Status</p>
                         <Badge
                           className={
-                            selectedPatient.status === "ativo" ? "bg-green-600 text-white" : "bg-gray-400 text-white"
+                            selectedPatient.status === "ativo"
+                              ? "bg-green-600 text-white"
+                              : "bg-gray-400 text-white"
                           }
                         >
-                          {selectedPatient.status === "ativo" ? "Ativo" : "Inativo"}
+                          {selectedPatient.status === "ativo"
+                            ? "Ativo"
+                            : "Inativo"}
                         </Badge>
                       </div>
                       <div className="bg-gray-50 p-4 rounded-lg">
-                        <p className="text-xs text-gray-600 mb-2">Última Visita</p>
-                        <p className="text-gray-900 font-medium">{selectedPatient.lastVisit}</p>
+                        <p className="text-xs text-gray-600 mb-2">
+                          Última Visita
+                        </p>
+                        <p className="text-gray-900 font-medium">
+                          {selectedPatient.lastVisit}
+                        </p>
                       </div>
                     </div>
                   </section>
 
-                  {/* Ações */}
                   <div className="border-t pt-6 flex gap-3">
-                    <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">Editar Ficha</Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1 border-blue-600 text-blue-600 hover:bg-blue-50 bg-transparent"
-                    >
-                      Agendar Consulta
+                    <Button className="cursor-pointer flex-1 bg-blue-600 hover:bg-blue-700 text-white">
+                      <Edit className="h-4 w-4 mr-2" />
+                      Editar Ficha
+                    </Button>
+                    <Button onClick={handleAccessRecord} className="cursor-pointer flex-1 bg-green-600 hover:bg-green-700 text-white">
+                      <Stethoscope className="h-4 w-4 mr-2" />
+                      Acessar Ficha
                     </Button>
                   </div>
                 </div>
@@ -246,7 +264,9 @@ export function SearchPatients() {
               <Card className="shadow-lg border-0 flex items-center justify-center h-96">
                 <div className="text-center">
                   <User className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                  <p className="text-gray-500 font-medium">Selecione um paciente para visualizar a ficha completa</p>
+                  <p className="text-gray-500 font-medium">
+                    Selecione um paciente para visualizar a ficha completa
+                  </p>
                 </div>
               </Card>
             )}
@@ -254,13 +274,13 @@ export function SearchPatients() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 interface InfoFieldProps {
-  icon: React.ComponentType<{ className?: string }>
-  label: string
-  value: string
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
 }
 
 function InfoField({ icon: Icon, label, value }: InfoFieldProps) {
@@ -272,5 +292,5 @@ function InfoField({ icon: Icon, label, value }: InfoFieldProps) {
       </div>
       <p className="text-gray-900 font-medium text-sm">{value}</p>
     </div>
-  )
+  );
 }
