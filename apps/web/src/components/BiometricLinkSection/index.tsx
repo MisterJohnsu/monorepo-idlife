@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { bridgeApi } from "@/lib/axios";
 import { CheckCircle, Fingerprint, Loader2 } from "lucide-react";
 import { useState } from "react";
 
@@ -15,12 +16,18 @@ export function BiometricLinkSection({
     "waiting" | "scanning" | "success" | "error"
   >("waiting");
 
-  const startScanning = () => {
-    setStep("scanning");
-    // Simulate scanning process
-    setTimeout(() => {
-      setStep("success");
-    }, 2000);
+  const startScanning = async () => {
+    try {
+      setStep("scanning");
+      const response = await bridgeApi.post("/cadastro")
+      if (response.status === 200) {
+        setStep("success");
+      }
+
+    } catch (error) {
+      console.error("Erro ao iniciar a captura biométrica:", error);
+      setStep("error");
+    }
   };
 
   const resetProcess = () => {

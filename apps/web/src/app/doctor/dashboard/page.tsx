@@ -68,9 +68,7 @@ export default function DoctorDashboard() {
         </div>
         {view === "search" ? (
           <SearchPatients
-            onSelectPatient={(patient) => {
-              (setPatient(patient), setView("patient-record"));
-            }}
+            onSelectPatient={(patient) => {setView("patient-record"); setPatient(patient)}}
           />
         ) : view === "biometry" ? (
           <BiometricLinkSection patientName={patientName} />

@@ -32,7 +32,7 @@ interface Patient {
 }
 
 interface SearchPatientsProps {
-  onSelectPatient?: (patient: Patient) => void;
+  onSelectPatient: (patient: Patient) => void;
 }
 
 export function SearchPatients({ onSelectPatient }: SearchPatientsProps) {
@@ -77,7 +77,7 @@ export function SearchPatients({ onSelectPatient }: SearchPatientsProps) {
 
   const handleAccessRecord = () => {
     if (selectedPatient) {
-      onSelectPatient?.(selectedPatient);
+      onSelectPatient(selectedPatient);
     }
   }
 

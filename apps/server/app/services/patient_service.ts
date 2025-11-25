@@ -1,5 +1,5 @@
-import Patient from '#models/patient'
-import Ws from './Ws.ts'
+import Patient from '#models/patient';
+import Ws from './Ws.ts';
 
 export class PatientService {
 
@@ -8,7 +8,10 @@ export class PatientService {
             if (registerBiometric) {
                 const socket = Ws.io
 
-                const cpf = await socket?.emit('consultCpf')
+                const cpf = socket?.emit("consultCpf");
+                socket?.on("consultCpf", (response) => {
+                    console.log("Dados recebidos do servidor:", response);
+                });
 
                 if (!cpf) {
                     throw new Error('CPF não encontrado ou ws não conectado.')
