@@ -6,9 +6,7 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle } from "lucide-react";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { io } from "socket.io-client";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -83,7 +81,6 @@ export function RegisterPatient({
       desiases: "",
     },
   });
-  const socket = io("http://localhost:3333");
 
   const handleFormSubmit = async (data: RegistrationPatientData) => {
     try {
@@ -91,18 +88,11 @@ export function RegisterPatient({
       if (response.status === 201) {
         onSuccess(true);
         onPatient(data);
-        socket.emit("registerCpf", { cpf: data.cpf });
       }
     } catch (error) {
       console.error("Erro ao enviar o formulário:", error);
     }
   };
-
-  useEffect(() => {
-    socket.on("connect", () => {
-      console.log("Conectado ao servidor de WebSocket");
-    });
-  }, []);
 
   return (
     <div className="space-y-6">
