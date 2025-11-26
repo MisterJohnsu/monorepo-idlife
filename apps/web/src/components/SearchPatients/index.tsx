@@ -350,7 +350,7 @@ export function SearchPatients({ onSelectPatient, onBiometricRegister }: SearchP
                       <Stethoscope className="h-4 w-4 mr-2" />
                       Acessar Ficha
                     </Button>
-                    {!selectedPatient.dy50_id && (
+                    {selectedPatient.dy50_id === null || selectedPatient.dy50_id === "" && (
                       <Button
                         onClick={() => {
                           onBiometricRegister(selectedPatient);
