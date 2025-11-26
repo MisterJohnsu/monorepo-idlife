@@ -58,6 +58,8 @@ export function BiometricLinkSection({
         const replaceData = data.message.replace("Cadastro OK: ID", "").trim();
         const biometricId = parseInt(replaceData, 10);
         scanningApi(String(biometricId));
+      } else if (data.message.includes("ERRO: ")) {
+          setStep("error");
       }
     };
     socket.on("listenArduino", handleListenArduino);
