@@ -1,10 +1,10 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { PatientService } from '#services/patient_sevice'
+import { PatientService } from '#services/patient_service'
 import Patient from '#models/patient'
 
 export default class PatientController {
   
-  private PatientService = new PatientService()
+  private patientService = new PatientService()
   
   /**
    * Retorna um Patient por seu ID
@@ -21,41 +21,6 @@ export default class PatientController {
       return response.notFound({ error: 'Paciente não encontrado' })
     }
   }
-  // public async create({ request, response }: HttpContext) {
-  //   try {
-  //     const { data } = request.all()
-  //     const patient = await this.service.create(data)
-
-  //     return response.created({
-  //       message: 'patient cadastrado com sucesso',
-  //       patient
-  //     })
-
-  //   } catch (error) {
-  //     return response.badRequest({ 
-  //       error: 'Erro ao cadastrar patient', 
-  //       details: error.message 
-  //     })
-  //   }
-  // }
-
-  // public async createWithBiometric({ request, response }: HttpContext) {
-  //   try {
-  //     const { data } = request.all()
-  //     const updatedpatient = await this.service.linkBiometric(data.id, data.idpatientAguardando)
-
-  //     return response.created({
-  //       message: 'patient com biometria cadastrado com sucesso',
-  //       updatedpatient
-  //     })
-  //   } catch (error) {
-  //     return response.badRequest({ 
-  //       error: 'Erro ao cadastrar patient com biometria', 
-  //       details: error.message 
-  //     })
-  //   }
-  // }
-
   /**
    * ATUALIZAR patient
    */
@@ -77,7 +42,7 @@ export default class PatientController {
         }
       })
 
-      const patient = await this.PatientService.update(params.id, data)
+      const patient = await this.patientService.update(params.id, data)
 
       return response.ok({
         message: 'Paciente atualizado com sucesso',
@@ -89,18 +54,6 @@ export default class PatientController {
         error: 'patient não encontrado ou erro na atualização', 
         details: error.message 
       })
-    }
-  }
-
-  /**
-   * REMOVER patient
-   */
-  public async destroy({ params, response }: HttpContext) {
-    try {
-      await this.PatientService.delete(params.id)
-      return response.ok({ message: 'patient removido com sucesso' })
-    } catch (error) {
-      return response.notFound({ error: 'patient não encontrado' })
     }
   }
 }

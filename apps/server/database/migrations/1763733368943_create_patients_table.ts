@@ -6,30 +6,29 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       // ID Primário
-      table.increments('patientId').primary().notNullable()
+      table.increments('patient_id').primary().notNullable()
       
       // Dados Pessoais
-      table.string('patientName').notNullable()
+      table.string('patient_name').notNullable()
       table.string('email').notNullable().unique()
       table.string('cpf', 11).notNullable().unique()
       table.string('password').notNullable()
       table.string('phone', 15).notNullable()
-      table.date('bithDate').notNullable()
-      table.json('adress').notNullable()
+      table.date('birth_date').notNullable()
+      table.json('address').notNullable()
+      table.json('emergency_contact').notNullable()
       
       // Biometria (Nullable para permitir cadastro antes da digital)
-      table.integer('dy50_id').nullable().unique() 
+      table.string('dy_50_id').nullable().unique() 
 
       // Dados Médicos/Opcionais
       table.string('gender').notNullable()
-      table.string('bloodType').notNullable()
-      table.string('emergencyPhone', 15).nullable()
-      table.string('emergencyName').nullable()
-      table.string('aditionalInfo').nullable()
+      table.string('blood_type').notNullable()
+      table.string('additional_info').nullable()
       table.string('insurance').nullable()
       table.string('allergies').nullable()
-      table.string('medicalDevices').nullable()
-      table.string('medication').nullable()
+      table.string('medical_devices').nullable()
+      table.string('medications').nullable()
       table.string('diseases').nullable()
 
       table.timestamps(true, true)

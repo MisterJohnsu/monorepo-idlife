@@ -1,21 +1,24 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 
-export default class Consulta extends BaseModel {
-    @column({ isPrimary: true })
+export default class Appointments extends BaseModel {
+    @column({ isPrimary: true, columnName: 'appointment_id' })
     declare appointmentId: number
 
-    @column()
+    @column({ columnName: 'patient_id' })
     declare patientId: number
 
-    @column()
-    declare doctorId: number
+    @column({ columnName: 'employee_id' })
+    declare employeeId: number
 
     @column.dateTime()
-    declare dtConsulta: DateTime
+    declare appointment_date: DateTime
     
     @column()
-    declare observations?: string
+    declare diagnosis?: string
+
+    @column()
+    declare notes?: string
 
     @column.dateTime({ autoCreate: true, columnName: 'created_at', serializeAs: 'created_at' })
   declare created_at: DateTime

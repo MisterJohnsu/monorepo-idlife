@@ -5,14 +5,14 @@ export default class Patient extends BaseModel {
 
   public static primaryKey = 'pacienteId'
 
-  @column({ isPrimary: true })
+  @column({ isPrimary: true , columnName: 'patient_id' })
   declare patientId: number
 
   // Campos obrigatórios
-  @column()
-  declare dy50_id: number | null
+  @column({ columnName: 'dy_50_id' })
+  declare dy50_id: string | null
 
-  @column()
+  @column({ columnName: 'patient_name' })
   declare patientName: string
 
   @column()
@@ -24,45 +24,43 @@ export default class Patient extends BaseModel {
   @column()
   declare gender: string
 
-  @column()
+  @column({ columnName: 'blood_type' })
   declare bloodType: string
 
   @column()
   declare phone: string
 
-  @column()
+  @column({ columnName: 'birth_date' })
   declare birthDate: Date
 
-  @column()
-  declare adress: string
-
+  
   @column({ serializeAs: null })
   declare password: string
-
+  
   // Campos opcionais
+  @column()
+  declare address: { street: string, complement?: string, city: string, state: string }
+
   @column()
   declare insurance?: string | null
 
   @column()
   declare allergies?: string | null
 
-  @column()
+  @column({ columnName: 'medical_devices' })
   declare medicalDevices?: string | null
 
   @column()
-  declare medication?: string | null
+  declare medications?: string | null
 
-  @column()
-  declare aditionalInfo?: string | null
+  @column({ columnName: 'additional_info' })
+  declare additionalInfo?: string | null
 
   @column()
   declare diseases?: string | null
 
-  @column()
-  declare emergencyPhone?: string | null
-
-  @column()
-  declare emergencyName?: string | null
+ @column({ columnName: 'emergency_contact' })
+  declare emergencyContact?: {emergencyName: string, emergencyPhone: string, relation: string} | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
