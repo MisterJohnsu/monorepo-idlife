@@ -1,5 +1,5 @@
-import { PatientService } from '#services/patient_service'
 import { EmployeeService } from '#services/employee_service'
+import { PatientService } from '#services/patient_service'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class EmployeeController {
@@ -59,7 +59,6 @@ export default class EmployeeController {
 
     public async patientDelete({ params, response }: HttpContext) {
         try {
-            console.log('ID recebido para deletar:', params.cpf);
             const data = params.cpf
             await this.patientService.delete(data)
             return response.ok({ message: 'Deletado' })

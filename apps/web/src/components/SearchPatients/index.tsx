@@ -89,8 +89,6 @@ export function SearchPatients({ onSelectPatient, onBiometricRegister }: SearchP
           patient.cpf.includes(searchTerm.replace(/\D/g, ""))
       );
 
-      console.log("results ===>", results);
-
       setSearchResults(results);
       setHasSearched(true);
       setSelectedPatient(null);
@@ -114,7 +112,6 @@ export function SearchPatients({ onSelectPatient, onBiometricRegister }: SearchP
 
   const handleDeletePatient = async () => {
     try {
-      console.log("selectedPatient ===>", selectedPatient);
       if (!selectedPatient) {
         return;
       }
@@ -138,8 +135,6 @@ export function SearchPatients({ onSelectPatient, onBiometricRegister }: SearchP
       console.error("Erro ao deletar paciente:", error);
     }
   };
-
-  console.log("selectedPatient ===>", selectedPatient);
 
   return (
     <div className="space-y-6">

@@ -16,11 +16,11 @@ import {
   User,
   X,
 } from "lucide-react";
+import { DateTime } from "luxon";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { DateTime } from "luxon";
 
 export default function ResponderPage() {
   const router = useRouter();
@@ -35,7 +35,6 @@ export default function ResponderPage() {
   const [patientData, setPatientData] = useState<any>(null);
 
   const handleNovaConsulta = () => {
-    console.log("Limpando dados e iniciando nova consulta...");
     setScanStatus("idle");
     setPatientData(null);
     setMessageArduino("");
