@@ -1,8 +1,28 @@
-import { AlertCircle, Badge, Calendar, Clock, Plus } from "lucide-react";
+import {
+  AlertCircle,
+  Badge,
+  Calendar,
+  Clock,
+  Plus,
+  TrashIcon,
+} from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Input } from "../ui/input";
+import { string } from "zod";
+import { api } from "@/lib/axios";
 
 interface CareVisit {
   id: string;
@@ -21,7 +41,7 @@ interface Appointment {
   date: string;
   time: string;
   reason: string;
-  status: "agendada" | "confirmada" | "cancelada";
+  status: "agendada" | "confirmada" | "cancelada" | "";
 }
 
 interface PatientCareRecordProps {
@@ -36,7 +56,7 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
   const [isAddingAppointment, setIsAddingAppointment] = useState(false);
   const [careVisits, setCareVisits] = useState<CareVisit[]>([
     {
-      id: "1",
+      id: "",
       date: "",
       time: "",
       symptoms: "",
@@ -62,11 +82,11 @@ export function PatientCareRecord({ patient }: PatientCareRecordProps) {
   });
   const [appointments, setAppointments] = useState<Appointment[]>([
     {
-      id: "1",
-      date: "25/11/2025",
-      time: "10:00",
-      reason: "Retorno - Acompanhamento",
-      status: "confirmada",
+      id: "",
+      date: "",
+      time: "",
+      reason: "",
+      status: "",
     },
   ]);
 

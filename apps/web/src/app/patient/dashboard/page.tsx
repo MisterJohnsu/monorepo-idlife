@@ -36,7 +36,7 @@ export default function PatientDashboard() {
       });
 
       if (response.status === 200) {
-        setPatient(response.data.patients[0]);
+        setPatient(response.data.patients);
       }
     } catch (error) {
       console.error("Erro ao buscar paciente:", error);

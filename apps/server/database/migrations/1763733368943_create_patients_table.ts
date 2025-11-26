@@ -16,6 +16,7 @@ export default class extends BaseSchema {
       table.string('phone', 15).notNullable()
       table.date('birth_date').notNullable()
       table.json('address').notNullable()
+      table.json('emergency_contact').notNullable()
       
       // Biometria (Nullable para permitir cadastro antes da digital)
       table.string('dy_50_id').nullable().unique() 
@@ -23,8 +24,6 @@ export default class extends BaseSchema {
       // Dados Médicos/Opcionais
       table.string('gender').notNullable()
       table.string('blood_type').notNullable()
-      table.string('emergency_phone', 15).nullable()
-      table.string('emergency_name').nullable()
       table.string('additional_info').nullable()
       table.string('insurance').nullable()
       table.string('allergies').nullable()

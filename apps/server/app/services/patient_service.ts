@@ -19,8 +19,7 @@ export class PatientService {
                 bloodType: data.bloodType,
                 cpf: data.cpf,
                 email: data.email,
-                emergencyName: data.emergencyName,
-                emergencyPhone: data.emergencyPhone,
+                emergency_contact: { name: data.emergencyName, phone: data.emergencyPhone, relation: data.relation },
                 gender: data.gender,
                 insurance: data.insurance,
                 medicalDevices: data.medicalDevices,
@@ -81,9 +80,9 @@ export class PatientService {
         }
     }
 
-    public async delete(id: number) {
+    public async delete(cpf: string) {
         try {
-            const patient = await Patient.findOrFail(id)
+            const patient = await Patient.findByOrFail('cpf', cpf)
             await patient.delete()
             return true
         } catch (error) {

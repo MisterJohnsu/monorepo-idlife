@@ -39,7 +39,7 @@ export default class Patient extends BaseModel {
   
   // Campos opcionais
   @column()
-  declare address: { street: string, city: string, state: string }
+  declare address: { street: string, complement?: string, city: string, state: string }
 
   @column()
   declare insurance?: string | null
@@ -59,11 +59,8 @@ export default class Patient extends BaseModel {
   @column()
   declare diseases?: string | null
 
-  @column({ columnName: 'emergency_phone' })
-  declare emergencyPhone?: string | null
-
-  @column({ columnName: 'emergency_name' })
-  declare emergencyName?: string | null
+ @column({ columnName: 'emergency_contact' })
+  declare emergencyContact?: {emergencyName: string, emergencyPhone: string, relation: string} | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

@@ -6,7 +6,9 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { io } from "socket.io-client";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -18,8 +20,9 @@ const formSchema = z.object({
   phone: z.string().min(10, "Telefone inválido"),
   address: z.string().min(5, "Endereço inválido"),
   city: z.string().min(2, "Cidade inválida"),
-  email: z.string().email("Email inválido"),
   state: z.enum(["SP", "RJ", "MG", "BA", "RS", "PR", "PE", "CE", "PA", "SC"]),
+  complement: z.string().optional(),
+  email: z.string().email("Email inválido"),
   gender: z.enum(["M", "F", "Outro"]),
   bloodType: z.enum([
     "A+",
@@ -32,10 +35,24 @@ const formSchema = z.object({
     "O-",
     "Outro",
   ]),
-  emergencyPhone: z.string().min(10),
-  emergencyName: z.string().min(2),
+  emergencyContact: z.string(),
+  emergencyName: z.string(),
+  emergencyPhone: z.string(),
+  emergencyRelation: z.string(),
   medicalDevices: z.string(),
-  insurance: z.string(),
+  insurance: z.enum([
+    "Bradesco Saúde",
+    "SulAmérica",
+    "Porto Seguro Saúde",
+    "Amil",
+    "Notre Dame",
+    "Unimed",
+    "Prevent Senior",
+    "Blue Med/Transmontano",
+    "Alice",
+    "Outro",
+    "Sem Seguro de Saúde",
+  ]),
   allergies: z.string(),
   additionalInfo: z.string(),
   medications: z.string(),
@@ -69,18 +86,22 @@ export function RegisterPatient({
       address: "",
       city: "",
       state: "SP",
+      complement: "",
       gender: "M",
       bloodType: "A+",
-      emergencyPhone: "",
+      emergencyContact: "",
       emergencyName: "",
+      emergencyPhone: "",
+      emergencyRelation: "",
       medicalDevices: "",
-      insurance: "",
+      insurance: "Sem Seguro de Saúde",
       allergies: "",
       additionalInfo: "",
       medications: "",
       desiases: "",
     },
   });
+  const socket = io("http://localhost:3333");
 
   const handleFormSubmit = async (data: RegistrationPatientData) => {
     try {
@@ -88,11 +109,18 @@ export function RegisterPatient({
       if (response.status === 201) {
         onSuccess(true);
         onPatient(data);
+        socket.emit("registerCpf", { cpf: data.cpf });
       }
     } catch (error) {
       console.error("Erro ao enviar o formulário:", error);
     }
   };
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Conectado ao servidor de WebSocket");
+    });
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -201,23 +229,36 @@ export function RegisterPatient({
               </div>
             </div>
           </fieldset>
-
           <fieldset className="space-y-4 border-t pt-6">
             <legend className="text-lg font-semibold text-gray-900 mb-4">
               Endereço
             </legend>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-160">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Logradouro *
+                </label>
+                <Input
+                  type="text"
+                  id="address"
+                  placeholder="Digite o endereço"
+                  className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500 w-170"
+                  {...register("address")}
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Logradouro *
-              </label>
-              <Input
-                type="text"
-                id="address"
-                placeholder="Digite o endereço"
-                className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                {...register("address")}
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Complemento
+                </label>
+                <Input
+                  type="text"
+                  id="complement"
+                  placeholder="Complemento"
+                  className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500 w-30 height-1"
+                  {...register("complement")}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -290,7 +331,7 @@ export function RegisterPatient({
                   <option value="AB-">AB-</option>
                   <option value="O+">O+</option>
                   <option value="O-">O-</option>
-                  <option value="Outro">Não sei informar</option>
+                  <option value="Não sei informar">Não sei informar</option>
                 </select>
               </div>
             </div>
@@ -319,6 +360,18 @@ export function RegisterPatient({
                   maxLength={15}
                   className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   {...register("emergencyPhone")}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Parentesco do Contato de Emergência
+                </label>
+                <Input
+                  type="text"
+                  id="emergencyRelationship"
+                  placeholder="Parentesco"
+                  className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  {...register("emergencyRelation")}
                 />
               </div>
             </div>
@@ -353,13 +406,25 @@ export function RegisterPatient({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Plano de Saúde
               </label>
-              <Input
-                type="text"
+              <select
                 id="insurance"
-                placeholder="Ex: Unimed, Bradesco, etc."
-                className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                 {...register("insurance")}
-              />
+                className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+              >
+                <option value="Bradesco Saúde">Bradesco Saúde</option>
+                <option value="SulAmérica">SulAmérica</option>
+                <option value="Porto Seguro Saúde">Porto Seguro Saúde</option>
+                <option value="Amil">Amil</option>
+                <option value="Notre Dame">Notre Dame</option>
+                <option value="Unimed">Unimed</option>
+                <option value="Prevent Senior">Prevent Senior</option>
+                <option value="Blue Med/Transmontano">
+                  Blue Med/Trasmontano
+                </option>
+                <option value="Alice">Alice</option>
+                <option value="Outro">Outro</option>
+                <option value="Sem Seguro de Saúde">Sem Seguro de Saúde</option>
+              </select>
             </div>
 
             <div>

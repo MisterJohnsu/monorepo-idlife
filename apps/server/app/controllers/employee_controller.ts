@@ -59,11 +59,11 @@ export default class EmployeeController {
 
     public async patientDelete({ params, response }: HttpContext) {
         try {
-            await this.patientService.delete(params.id)
+            console.log('ID recebido para deletar:', params.cpf);
+            const data = params.cpf
+            await this.patientService.delete(data)
+            return response.ok({ message: 'Deletado' })
 
-            return response.ok({
-                message: 'Paciente deletado com sucesso'
-            })
         } catch (error) {
             return response.badRequest({
                 error: 'Erro ao deletar paciente',

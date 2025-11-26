@@ -7,6 +7,7 @@ router.group(() => {
     router.post('/register', [EmployeeController, 'patientCreate'])
     router.post('/search', [EmployeeController, 'patientShow'])
     router.post('/biometric/register', [EmployeeController, 'patientBiometricCreate'])
+    router.delete('/delete/:cpf', [EmployeeController, 'patientDelete'])
 
     //Login de Pacientes
     router.post('/login-patient', [AuthController, 'loginPatient'])
