@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { api, bridgeApi } from "@/lib/axios";
-import { CheckCircle, Fingerprint, Loader2 } from "lucide-react";
+import { CheckCircle, Fingerprint, Loader2, ShieldAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
@@ -59,7 +59,7 @@ export function BiometricLinkSection({
         const biometricId = parseInt(replaceData, 10);
         scanningApi(String(biometricId));
       } else if (data.message.includes("ERRO: ")) {
-          setStep("error");
+        setStep("error");
       }
     };
     socket.on("listenArduino", handleListenArduino);
@@ -69,10 +69,10 @@ export function BiometricLinkSection({
   }, []);
 
   return (
-    <section className="sm:max-w-md mx-auto p-4 border rounded-lg shadow-md bg-white dark:bg-gray-800">
+    <section className="sm:max-w-full mx-auto p-4 border rounded-lg shadow-md bg-white dark:bg-gray-800">
       <header className="mb-4">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-          Vínculo Biométrico {messageArduino}
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Vínculo Biométrico
         </h2>
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Vinculando digital para o paciente:{" "}
@@ -82,7 +82,7 @@ export function BiometricLinkSection({
         </p>
       </header>
 
-      <div className="flex flex-col items-center justify-center py-8 space-y-6">
+      <div className="flex flex-col items-center justify-center py-2 space-y-6">
         {step === "waiting" && (
           <>
             <div className="w-24 h-24 rounded-full bg-secondary flex items-center justify-center animate-pulse">
@@ -103,7 +103,7 @@ export function BiometricLinkSection({
               <div className="absolute inset-0 border-4 border-primary rounded-full border-t-transparent animate-spin" />
             </div>
             <p className="text-center font-medium text-primary">
-              Capturando leitura biométrica...
+              {messageArduino ? messageArduino : "Capturando leitura biométrica..."}
             </p>
           </>
         )}
@@ -126,25 +126,25 @@ export function BiometricLinkSection({
 
         {step === "error" && (
           <>
-            <div className="w-24 h-24 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-              {/* <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400" /> */}
+            <div className="w-24 h-24 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+              <ShieldAlert className="w-12 h-12 text-red-600 dark:text-red-400" />
             </div>
-            <div className="text-center space-y-1">
-              <p className="font-bold text-lg text-red-600 dark:text-red-400">
+            <div className="text-center">
+              <p className="font-bold text-xl text-red-600 dark:text-red-400">
                 Erro ao vincular biometria!
               </p>
               <p className="text-sm text-muted-foreground">
-                Não foi possível configurar a biometria.
+                {messageArduino ? messageArduino : "Não foi possível configurar a biometria."}
               </p>
-              <Button
-                onClick={() => setStep("waiting")}
-                size="lg"
-                className="w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                <Fingerprint className="mr-2 h-5 w-5" />
-                Tentar Novamente
-              </Button>
             </div>
+            <Button
+              onClick={() => setStep("waiting")}
+              size="lg"
+              className="w-full cursor-pointer bg-green-600 hover:bg-green-700 text-white"
+            >
+              <Fingerprint className="mr-2 h-5" />
+              Tentar Novamente
+            </Button>
           </>
         )}
       </div>
