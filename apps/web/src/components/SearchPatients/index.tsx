@@ -39,7 +39,7 @@ interface Patient {
   patientId: string;
   patientName: string;
   cpf: string;
-  dy50_id: string;
+  dy50Id: string;
   birthDate: string;
   phone: string;
   email: string;
@@ -113,15 +113,18 @@ export function SearchPatients({ onSelectPatient }: SearchPatientsProps) {
 
   const handleDeletePatient = async () => {
     try {
+      console.log("selectedPatient ===>", selectedPatient);
       if (!selectedPatient) {
         return;
       }
       const response = await api.delete(
         `api/patients/delete/${selectedPatient.cpf}`
       );
-      if (selectedPatient.dy50_id) {
+      if (selectedPatient.dy50Id) {
         await bridgeApi.post(`http://localhost:3001/delete`, {
-          id: selectedPatient.dy50_id,
+          data: {
+            id: selectedPatient.dy50Id,
+          },
         });
       }
       if (response.status === 200) {

@@ -38,9 +38,9 @@ export class PatientService {
         }
     }
 
-    public async update(id: number, dados: Partial<Patient>) {
+    public async update(cpf: string, dados: Partial<Patient>) {
         try {
-            const patient = await Patient.findOrFail(id)
+            const patient = await Patient.findOrFail(cpf)
             patient.merge(dados)
             await patient.save()
             return patient
@@ -49,8 +49,8 @@ export class PatientService {
             throw error // Repassa o erro para quem chamou
         }
     }
-
     public async showPatient(data: any) {
+
         try {
             let cpf
             let name
