@@ -8,13 +8,14 @@ router.group(() => {
     router.post('/search', [EmployeeController, 'patientShow'])
     router.post('/biometric/register', [EmployeeController, 'patientBiometricCreate'])
     router.delete('/delete/:cpf', [EmployeeController, 'patientDelete'])
+    router.put('/update/:cpf', [EmployeeController, 'patientUpdate'])
 
     //Login de Pacientes
     router.post('/login-patient', [AuthController, 'loginPatient'])
   }).prefix('patients')
 
   router.group(() => {
-  router.post('/login-employee', [AuthController, 'loginEmployee'])
-  router.post('/register', [EmployeeController, 'employeeCreate'])
+    router.post('/login-employee', [AuthController, 'loginEmployee'])
+    router.post('/register', [EmployeeController, 'employeeCreate'])
   }).prefix('employees')
 }).prefix('api')

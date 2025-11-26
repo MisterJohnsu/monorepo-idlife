@@ -14,12 +14,13 @@ import {
   ShieldAlert,
   Trash2,
   User,
-  X, // Importei o ícone X para o botão de cancelar
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { DateTime } from "luxon";
 
 export default function ResponderPage() {
   const router = useRouter();
@@ -43,7 +44,6 @@ export default function ResponderPage() {
 
   // --- NOVA FUNÇÃO: CANCELAR ---
   const handleCancelScan = () => {
-    // Aqui futuramente você pode chamar bridgeApi.get("/cancelar") se implementar no Arduino
     try {
       bridgeApi.get("/cancelar");
       setScanStatus("idle");
@@ -276,8 +276,13 @@ export default function ResponderPage() {
                     <span>CPF: {patientData.cpf || "---"}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
-                    <span>Nascimento: {patientData.birthDate || "---"}</span>
+                    <InfoField
+                      icon={Calendar}
+                      label="Data de Nascimento"
+                      value={DateTime.fromISO(
+                        patientData.birthDate
+                      ).toLocaleString(DateTime.DATE_MED)}
+                    />
                   </div>
                 </div>
               </div>
@@ -393,6 +398,23 @@ export default function ResponderPage() {
           animation: scan 2s ease-in-out infinite;
         }
       `}</style>
+    </div>
+  );
+}
+interface InfoFieldProps {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+}
+
+function InfoField({ icon: Icon, label, value }: InfoFieldProps) {
+  return (
+    <div className=" p-3 rounded-lg">
+      <div className="flex items-center gap-2 mb-1">
+        <Icon className="h-4 w-4 text-blue-600" />
+        <p className="text-xs text-gray-600">{label}</p>
+      </div>
+      <p className="text-slate-400 font-medium text-sm">{value}</p>
     </div>
   );
 }

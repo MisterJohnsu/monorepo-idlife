@@ -47,6 +47,7 @@ export function BiometricLinkSection({
       api.post("api/patients/biometric/register", { data });
       setStep("success");
     } catch (error) {
+      setStep("error");
       console.error("Erro ao vincular biometria:", error);
     }
   };
@@ -103,7 +104,9 @@ export function BiometricLinkSection({
               <div className="absolute inset-0 border-4 border-primary rounded-full border-t-transparent animate-spin" />
             </div>
             <p className="text-center font-medium text-primary">
-              {messageArduino ? messageArduino : "Capturando leitura biométrica..."}
+              {messageArduino
+                ? messageArduino
+                : "Capturando leitura biométrica..."}
             </p>
           </>
         )}
@@ -134,7 +137,9 @@ export function BiometricLinkSection({
                 Erro ao vincular biometria!
               </p>
               <p className="text-sm text-muted-foreground">
-                {messageArduino ? messageArduino : "Não foi possível configurar a biometria."}
+                {messageArduino
+                  ? messageArduino
+                  : "Não foi possível configurar a biometria."}
               </p>
             </div>
             <Button
