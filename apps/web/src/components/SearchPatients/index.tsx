@@ -2,12 +2,6 @@
 
 import type React from "react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { api, bridgeApi } from "@/lib/axios";
-import { useRouter } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,21 +13,25 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { api, bridgeApi } from "@/lib/axios";
 import {
   Calendar,
   Edit,
+  Fingerprint,
   MapPin,
   Phone,
   Search,
   Stethoscope,
-  User,
   TrashIcon,
+  User,
 } from "lucide-react";
 import { DateTime } from "luxon";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Socket, io } from "socket.io-client";
-import { string } from "zod";
-import { BiometricLinkSection } from "../BiometricLinkSection";
 
 interface Patient {
   patientId: string;
@@ -58,9 +56,10 @@ interface Patient {
 
 interface SearchPatientsProps {
   onSelectPatient: (patient: Patient) => void;
+  onBiometricRegister: (patient: Patient) => void;
 }
 
-export function SearchPatients({ onSelectPatient }: SearchPatientsProps) {
+export function SearchPatients({ onSelectPatient, onBiometricRegister }: SearchPatientsProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Patient[]>([]);
@@ -183,11 +182,10 @@ export function SearchPatients({ onSelectPatient }: SearchPatientsProps) {
                     <button
                       key={patient.patientId}
                       onClick={() => handleSelectPatient(patient)}
-                      className={`w-full text-left p-4 hover:bg-blue-50 transition-colors ${
-                        selectedPatient?.patientId === patient.patientId
+                      className={`w-full text-left p-4 hover:bg-blue-50 transition-colors ${selectedPatient?.patientId === patient.patientId
                           ? "bg-blue-100 border-l-4 border-blue-600"
                           : ""
-                      }`}
+                        }`}
                     >
                       <div className="font-semibold text-gray-900 text-sm mb-1">
                         {patient.patientName}
@@ -230,7 +228,7 @@ export function SearchPatients({ onSelectPatient }: SearchPatientsProps) {
             {selectedPatient ? (
               <Card className="shadow-lg border-0 overflow-hidden">
                 <div className="bg-linear-gradient-to-r bg-blue-600 from-blue-600 to-blue-700 p-6">
-                  <div className="flex cols-1 gap-150">
+                  <div className="flex justify-between items-center">
                     <div>
                       <h3 className="text-white text-2xl font-bold">
                         {selectedPatient.patientName}
@@ -240,14 +238,12 @@ export function SearchPatients({ onSelectPatient }: SearchPatientsProps) {
                       </p>
                     </div>
                     <AlertDialog>
-                      {/* O botão que abre o modal */}
                       <AlertDialogTrigger asChild>
-                        <Button className="flex items-center justify-right gap-2 bg-red-600 hover:bg-red-700 text-white">
-                          <TrashIcon className="h-4 w-4" />
+                        <Button className="cursor-pointer bg-transparent hover:bg-transparent text-white hover:text-gray-300">
+                          <TrashIcon />
                         </Button>
                       </AlertDialogTrigger>
 
-                      {/* O conteúdo do Modal */}
                       <AlertDialogContent>
                         <AlertDialogHeader>
                           <AlertDialogTitle>
@@ -260,11 +256,10 @@ export function SearchPatients({ onSelectPatient }: SearchPatientsProps) {
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          {/* A ação de deletar acontece AQUI */}
+                          <AlertDialogCancel className="cursor-pointer">Cancelar</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={handleDeletePatient}
-                            className="bg-red-600 hover:bg-red-700 text-white"
+                            className="cursor-pointer bg-red-600 hover:bg-red-700 text-white"
                           >
                             Sim, deletar paciente
                           </AlertDialogAction>
@@ -358,6 +353,17 @@ export function SearchPatients({ onSelectPatient }: SearchPatientsProps) {
                       <Stethoscope className="h-4 w-4 mr-2" />
                       Acessar Ficha
                     </Button>
+                    {!selectedPatient.dy50_id && (
+                      <Button
+                        onClick={() => {
+                          onBiometricRegister(selectedPatient);
+                        }}
+                        className="cursor-pointer flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        <Fingerprint className="h-4 w-4 mr-2" />
+                        Cadastrar Biometria
+                      </Button>
+                    )}
                   </div>
                 </div>
               </Card>
