@@ -27,7 +27,7 @@ export class PatientService {
                 patientName: data.patientName,
                 phone: data.phone,
                 password: 'defaultPassword123',
-                dy50_id: ""
+                dy50_id: null
             }
 
             const patient = await Patient.create({ ...dataCreatePatient })
