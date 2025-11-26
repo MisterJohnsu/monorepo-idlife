@@ -65,7 +65,6 @@ export function SearchPatients({ onSelectPatient, onBiometricRegister }: SearchP
   const [searchResults, setSearchResults] = useState<Patient[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-  const [IsBiometricModalOpen, setIsBiometricModalOpen] = useState(false);
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -182,8 +181,8 @@ export function SearchPatients({ onSelectPatient, onBiometricRegister }: SearchP
                       key={patient.patientId}
                       onClick={() => handleSelectPatient(patient)}
                       className={`w-full text-left p-4 hover:bg-blue-50 transition-colors ${selectedPatient?.patientId === patient.patientId
-                          ? "bg-blue-100 border-l-4 border-blue-600"
-                          : ""
+                        ? "bg-blue-100 border-l-4 border-blue-600"
+                        : ""
                         }`}
                     >
                       <div className="font-semibold text-gray-900 text-sm mb-1">

@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Alert as AlertComponent } from '../Alert';
 
 const formSchema = z.object({
   patientName: z.string().min(2, "Nome inválido"),
@@ -68,6 +70,9 @@ export function RegisterPatient({
   onSuccess,
   onPatient,
 }: RegisterPatientProps) {
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [messageAlert, setMessageAlert] = useState('');
+
   const {
     register,
     handleSubmit,
@@ -99,6 +104,7 @@ export function RegisterPatient({
       desiases: "",
     },
   });
+
   const handleFormSubmit = async (data: RegistrationPatientData) => {
     try {
       const response = await api.post("api/patients/register", { data });
@@ -106,13 +112,20 @@ export function RegisterPatient({
         onSuccess(true);
         onPatient(data);
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response && error.response.data && error.response.data.message) {
+        setMessageAlert(error.response.data.message);
+      } else {
+        setMessageAlert('Erro ao cadastrar paciente. Verifique os dados e tente novamente.');
+      }
+      setAlertOpen(true);
       console.error("Erro ao enviar o formulário:", error);
     }
   };
 
   return (
     <div className="space-y-6">
+      <AlertComponent titleMessage="Alerta!" descriptionMessage={messageAlert} onClose={() => setAlertOpen(false)} open={alertOpen} type="error" />
       <Card className="p-8 shadow-lg border-0 bg-white">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-blue-900 mb-2">
