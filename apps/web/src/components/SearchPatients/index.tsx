@@ -89,6 +89,8 @@ export function SearchPatients({ onSelectPatient, onBiometricRegister }: SearchP
           patient.cpf.includes(searchTerm.replace(/\D/g, ""))
       );
 
+      console.log("results ===>", results);
+
       setSearchResults(results);
       setHasSearched(true);
       setSelectedPatient(null);
@@ -136,6 +138,8 @@ export function SearchPatients({ onSelectPatient, onBiometricRegister }: SearchP
       console.error("Erro ao deletar paciente:", error);
     }
   };
+
+  console.log("selectedPatient ===>", selectedPatient);
 
   return (
     <div className="space-y-6">
@@ -353,7 +357,7 @@ export function SearchPatients({ onSelectPatient, onBiometricRegister }: SearchP
                       <Stethoscope className="h-4 w-4 mr-2" />
                       Acessar Ficha
                     </Button>
-                    {selectedPatient.dy50_id === null || selectedPatient.dy50_id === "" && (
+                    {selectedPatient.dy50Id === null ? (
                       <Button
                         onClick={() => {
                           onBiometricRegister(selectedPatient);
@@ -363,7 +367,7 @@ export function SearchPatients({ onSelectPatient, onBiometricRegister }: SearchP
                         <Fingerprint className="h-4 w-4 mr-2" />
                         Cadastrar Biometria
                       </Button>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </Card>
