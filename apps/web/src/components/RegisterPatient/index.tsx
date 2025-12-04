@@ -20,7 +20,10 @@ const formSchema = z.object({
   phone: z.string().min(10, "Telefone inválido"),
   address: z.string().min(5, "Endereço inválido"),
   city: z.string().min(2, "Cidade inválida"),
-  state: z.enum(["SP", "RJ", "MG", "BA", "RS", "PR", "PE", "CE", "PA", "SC"]),
+  state: z.enum([
+    "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG",
+    "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
+  ]),
   complement: z.string().optional(),
   email: z.string().email("Email inválido"),
   gender: z.enum(["M", "F", "Outro"]),
