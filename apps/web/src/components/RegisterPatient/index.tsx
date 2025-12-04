@@ -1,112 +1,134 @@
 "use client";
-
-import type React from "react";
-
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { AlertCircle, Check } from "lucide-react";
+import { api } from "@/lib/axios";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertCircle } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Alert as AlertComponent } from '../Alert';
 
-interface RegistrationData {
-  patientName: string;
-  cpf: string;
-  birthDate: string;
-  phone: string;
-  email: string;
-  address: string;
-  city: string;
-  state: string;
+const formSchema = z.object({
+  patientName: z.string().min(2, "Nome inválido"),
+  cpf: z.string().min(11, "CPF inválido"),
+  birthDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
+    message: "Data de nascimento inválida",
+  }),
+  phone: z.string().min(10, "Telefone inválido"),
+  address: z.string().min(5, "Endereço inválido"),
+  city: z.string().min(2, "Cidade inválida"),
+  state: z.enum([
+    "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG",
+    "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
+  ]),
+  complement: z.string().optional(),
+  email: z.string().email("Email inválido"),
+  gender: z.enum(["M", "F", "Outro"]),
+  bloodType: z.enum([
+    "A+",
+    "A-",
+    "B+",
+    "B-",
+    "AB+",
+    "AB-",
+    "O+",
+    "O-",
+    "Outro",
+  ]),
+  emergencyContact: z.string(),
+  emergencyName: z.string(),
+  emergencyPhone: z.string(),
+  emergencyRelation: z.string(),
+  medicalDevices: z.string(),
+  insurance: z.enum([
+    "Bradesco Saúde",
+    "SulAmérica",
+    "Porto Seguro Saúde",
+    "Amil",
+    "Notre Dame",
+    "Unimed",
+    "Prevent Senior",
+    "Blue Med/Transmontano",
+    "Alice",
+    "Outro",
+    "Sem Seguro de Saúde",
+  ]),
+  allergies: z.string(),
+  additionalInfo: z.string(),
+  medications: z.string(),
+  desiases: z.string(),
+});
+
+type RegistrationPatientData = z.infer<typeof formSchema>;
+
+interface RegisterPatientProps {
+  onSuccess: (registredPatient: boolean) => void;
+  onPatient: (patient: any) => void;
 }
 
-export function RegisterPatient() {
-  const [formData, setFormData] = useState<RegistrationData>({
-    patientName: "",
-    cpf: "",
-    birthDate: "",
-    phone: "",
-    email: "",
-    address: "",
-    city: "",
-    state: "SP",
+export function RegisterPatient({
+  onSuccess,
+  onPatient,
+}: RegisterPatientProps) {
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [messageAlert, setMessageAlert] = useState('');
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<RegistrationPatientData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      patientName: "",
+      cpf: "",
+      birthDate: "",
+      phone: "",
+      email: "",
+      address: "",
+      city: "",
+      state: "SP",
+      complement: "",
+      gender: "M",
+      bloodType: "A+",
+      emergencyContact: "",
+      emergencyName: "",
+      emergencyPhone: "",
+      emergencyRelation: "",
+      medicalDevices: "",
+      insurance: "Sem Seguro de Saúde",
+      allergies: "",
+      additionalInfo: "",
+      medications: "",
+      desiases: "",
+    },
   });
 
-  const [submitted, setSubmitted] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-
-    // Validação básica
-    const isValid = Object.values(formData).every(
-      (field) => field.trim() !== ""
-    );
-
-    if (isValid) {
-      console.log("Novo paciente registrado:", formData);
-      setShowSuccess(true);
-
-      // Limpar formulário após 2 segundos
-      setTimeout(() => {
-        setFormData({
-          patientName: "",
-          cpf: "",
-          birthDate: "",
-          phone: "",
-          email: "",
-          address: "",
-          city: "",
-          state: "SP",
-        });
-        setSubmitted(false);
-        setShowSuccess(false);
-      }, 2000);
+  const handleFormSubmit = async (data: RegistrationPatientData) => {
+    try {
+      const response = await api.post("api/patients/register", { data });
+      if (response.status === 201) {
+        onSuccess(true);
+        onPatient(data);
+      }
+    } catch (error: any) {
+      if (error.response && error.response.data && error.response.data.message) {
+        setMessageAlert(error.response.data.message);
+      } else {
+        setMessageAlert('Erro ao cadastrar paciente. Verifique os dados e tente novamente.');
+      }
+      setAlertOpen(true);
+      console.error("Erro ao enviar o formulário:", error);
     }
-  };
-
-  const formatCPF = (value: string) => {
-    const numbers = value.replace(/\D/g, "");
-    if (numbers.length <= 3) return numbers;
-    if (numbers.length <= 6)
-      return `${numbers.slice(0, 3)}.${numbers.slice(3)}`;
-    if (numbers.length <= 9)
-      return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6)}`;
-    return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6, 9)}-${numbers.slice(9, 11)}`;
-  };
-
-  const formatPhone = (value: string) => {
-    const numbers = value.replace(/\D/g, "");
-    if (numbers.length <= 2) return numbers;
-    if (numbers.length <= 7)
-      return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
-    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
   };
 
   return (
     <div className="space-y-6">
-      {/* Mensagem de Sucesso */}
-      {showSuccess && (
-        <Alert className="bg-green-50 border-green-200 border-2">
-          <Check className="h-4 w-4 text-green-600" />
-          <AlertDescription className="text-green-800 font-medium">
-            Paciente cadastrado com sucesso!
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {/* Formulário de Cadastro */}
+      <AlertComponent titleMessage="Alerta!" descriptionMessage={messageAlert} onClose={() => setAlertOpen(false)} open={alertOpen} type="error" />
       <Card className="p-8 shadow-lg border-0 bg-white">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-blue-900 mb-2">
@@ -117,31 +139,22 @@ export function RegisterPatient() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Informações Pessoais */}
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           <fieldset className="space-y-4">
             <legend className="text-lg font-semibold text-gray-900 mb-4">
               Informações Pessoais
             </legend>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Nome Completo *
               </label>
               <Input
                 type="text"
-                name="name"
-                value={formData.patientName}
-                onChange={handleInputChange}
+                id="patientName"
                 placeholder="Digite o nome completo"
                 className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                required
+                {...register("patientName")}
               />
-              {submitted && !formData.patientName && (
-                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3" /> Campo obrigatório
-                </p>
-              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -151,24 +164,12 @@ export function RegisterPatient() {
                 </label>
                 <Input
                   type="text"
-                  name="cpf"
-                  value={formData.cpf}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      cpf: formatCPF(e.target.value),
-                    }))
-                  }
+                  id="cpf"
                   placeholder="000.000.000-00"
                   maxLength={14}
                   className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                  required
+                  {...register("cpf")}
                 />
-                {submitted && !formData.cpf && (
-                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" /> Campo obrigatório
-                  </p>
-                )}
               </div>
 
               <div>
@@ -177,22 +178,28 @@ export function RegisterPatient() {
                 </label>
                 <Input
                   type="date"
-                  name="birthDate"
-                  value={formData.birthDate}
-                  onChange={handleInputChange}
+                  id="birthDate"
                   className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                  required
+                  {...register("birthDate")}
                 />
-                {submitted && !formData.birthDate && (
-                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" /> Campo obrigatório
-                  </p>
-                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Gênero *
+                </label>
+                <select
+                  id="state"
+                  {...register("gender")}
+                  className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="M">Masculino</option>
+                  <option value="F">Feminino</option>
+                  <option value="Outro">Outro</option>
+                </select>
               </div>
             </div>
           </fieldset>
 
-          {/* Contato */}
           <fieldset className="space-y-4 border-t pt-6">
             <legend className="text-lg font-semibold text-gray-900 mb-4">
               Informações de Contato
@@ -205,24 +212,12 @@ export function RegisterPatient() {
                 </label>
                 <Input
                   type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      phone: formatPhone(e.target.value),
-                    }))
-                  }
+                  id="phone"
                   placeholder="(00) 00000-0000"
                   maxLength={15}
                   className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                  required
+                  {...register("phone")}
                 />
-                {submitted && !formData.phone && (
-                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" /> Campo obrigatório
-                  </p>
-                )}
               </div>
 
               <div>
@@ -231,46 +226,44 @@ export function RegisterPatient() {
                 </label>
                 <Input
                   type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
+                  id="email"
                   placeholder="exemplo@email.com"
                   className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                  required
+                  {...register("email")}
                 />
-                {submitted && !formData.email && (
-                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" /> Campo obrigatório
-                  </p>
-                )}
               </div>
             </div>
           </fieldset>
-
-          {/* Endereço */}
           <fieldset className="space-y-4 border-t pt-6">
             <legend className="text-lg font-semibold text-gray-900 mb-4">
               Endereço
             </legend>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-160">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Logradouro *
+                </label>
+                <Input
+                  type="text"
+                  id="address"
+                  placeholder="Digite o endereço"
+                  className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500 w-170"
+                  {...register("address")}
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Rua/Avenida *
-              </label>
-              <Input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                placeholder="Digite o endereço"
-                className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-              {submitted && !formData.address && (
-                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3" /> Campo obrigatório
-                </p>
-              )}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Complemento
+                </label>
+                <Input
+                  type="text"
+                  id="complement"
+                  placeholder="Complemento"
+                  className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500 w-30 height-1"
+                  {...register("complement")}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -280,18 +273,11 @@ export function RegisterPatient() {
                 </label>
                 <Input
                   type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
+                  id="city"
                   placeholder="Digite a cidade"
                   className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                  required
+                  {...register("city")}
                 />
-                {submitted && !formData.city && (
-                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" /> Campo obrigatório
-                  </p>
-                )}
               </div>
 
               <div>
@@ -299,50 +285,205 @@ export function RegisterPatient() {
                   Estado *
                 </label>
                 <select
-                  name="state"
-                  value={formData.state}
-                  onChange={handleInputChange}
+                  id="state"
+                  {...register("state")}
                   className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
                 >
-                  <option value="SP">São Paulo (SP)</option>
-                  <option value="RJ">Rio de Janeiro (RJ)</option>
-                  <option value="MG">Minas Gerais (MG)</option>
-                  <option value="BA">Bahia (BA)</option>
-                  <option value="RS">Rio Grande do Sul (RS)</option>
-                  <option value="PR">Paraná (PR)</option>
-                  <option value="PE">Pernambuco (PE)</option>
-                  <option value="CE">Ceará (CE)</option>
-                  <option value="PA">Pará (PA)</option>
-                  <option value="SC">Santa Catarina (SC)</option>
+                  <option value="AC">AC</option>
+                  <option value="AL">AL</option>
+                  <option value="AP">AP</option>
+                  <option value="AM">AM</option>
+                  <option value="BA">BA</option>
+                  <option value="CE">CE</option>
+                  <option value="DF">DF</option>
+                  <option value="ES">ES</option>
+                  <option value="GO">GO</option>
+                  <option value="MA">MA</option>
+                  <option value="MG">MG</option>
+                  <option value="MS">MS</option>
+                  <option value="MT">MT</option>
+                  <option value="PA">PA</option>
+                  <option value="PB">PB</option>
+                  <option value="PE">PE</option>
+                  <option value="PR">PR</option>
+                  <option value="PI">PI</option>
+                  <option value="RJ">RJ</option>
+                  <option value="RS">RS</option>
+                  <option value="RO">RO</option>
+                  <option value="RR">RR</option>
+                  <option value="SC">SC</option>
+                  <option value="SE">SE</option>
+                  <option value="SP">SP</option>
+                  <option value="TO">TO</option>
                 </select>
               </div>
             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tipo Sanguíneo *
+                </label>
+                <select
+                  id="bloodType"
+                  {...register("bloodType")}
+                  className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                  <option value="Não sei informar">Não sei informar</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nome do Contato de Emergência *
+                </label>
+                <Input
+                  type="text"
+                  id="emergencyName"
+                  placeholder="Nome do contato"
+                  className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  {...register("emergencyName")}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Telefone do Contato de Emergência *
+                </label>
+                <Input
+                  type="tel"
+                  id="emergencyPhone"
+                  placeholder="(00) 00000-0000"
+                  maxLength={15}
+                  className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  {...register("emergencyPhone")}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Parentesco do Contato de Emergência
+                </label>
+                <Input
+                  type="text"
+                  id="emergencyRelationship"
+                  placeholder="Parentesco"
+                  className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  {...register("emergencyRelation")}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Doenças Crônicas
+              </label>
+              <Input
+                type="text"
+                id="desiases"
+                placeholder="Ex: Diabetes, Hipertensão, etc."
+                className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                {...register("desiases")}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Aparelhos Médicos Utilizados
+              </label>
+              <Input
+                type="text"
+                id="medicalDevices"
+                placeholder="Ex: Marcapasso, prótese, etc."
+                className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                {...register("medicalDevices")}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Plano de Saúde
+              </label>
+              <select
+                id="insurance"
+                {...register("insurance")}
+                className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+              >
+                <option value="Bradesco Saúde">Bradesco Saúde</option>
+                <option value="SulAmérica">SulAmérica</option>
+                <option value="Porto Seguro Saúde">Porto Seguro Saúde</option>
+                <option value="Amil">Amil</option>
+                <option value="Notre Dame">Notre Dame</option>
+                <option value="Unimed">Unimed</option>
+                <option value="Prevent Senior">Prevent Senior</option>
+                <option value="Blue Med/Transmontano">
+                  Blue Med/Trasmontano
+                </option>
+                <option value="Alice">Alice</option>
+                <option value="Outro">Outro</option>
+                <option value="Sem Seguro de Saúde">Sem Seguro de Saúde</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Alergias
+              </label>
+              <Input
+                type="text"
+                id="allergies"
+                placeholder="Ex: Penicilina, látex, etc."
+                className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                {...register("allergies")}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Medicamentos em Uso
+              </label>
+              <Input
+                type="text"
+                id="medications"
+                placeholder="Ex: Aspirina, insulina, etc."
+                className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                {...register("medications")}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Informações Adicionais
+              </label>
+              <Input
+                type="text"
+                id="additionalInfo"
+                placeholder="Outras informações relevantes. Ex: histórico médico, preferências, etc."
+                className="h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                {...register("additionalInfo")}
+              />
+            </div>
           </fieldset>
 
-          {/* Botões */}
           <div className="flex gap-3 pt-6 border-t">
             <Button
               type="submit"
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold h-11"
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold h-11 cursor-pointer"
             >
               Cadastrar Paciente
             </Button>
             <Button
               type="reset"
               variant="outline"
-              className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50 h-11 bg-transparent"
-              onClick={() =>
-                setFormData({
-                  patientName: "",
-                  cpf: "",
-                  birthDate: "",
-                  phone: "",
-                  email: "",
-                  address: "",
-                  city: "",
-                  state: "SP",
-                })
-              }
+              className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50 h-11 bg-transparent cursor-pointer"
+              onClick={() => reset()}
             >
               Limpar
             </Button>
@@ -350,7 +491,6 @@ export function RegisterPatient() {
         </form>
       </Card>
 
-      {/* Informações de Ajuda */}
       <Alert className="bg-blue-50 border-blue-200 border">
         <AlertCircle className="h-4 w-4 text-blue-600" />
         <AlertDescription className="text-blue-800 text-sm">

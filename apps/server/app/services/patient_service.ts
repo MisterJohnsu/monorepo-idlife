@@ -1,84 +1,92 @@
-import Patient from '#models/patient'
-import Ws from './Ws.ts'
-
-interface CreatePatientDTO {
-    pacienteName: string
-    email: string
-    cpf: string
-    password: string
-    telefone: string
-    dtNascimento: string
-    sexo: string
-    tipoSanguineo: string
-    convenio?: string
-    alergia?: string
-    aparelho?: string
-    medicamentos?: string
-    info_adicional?: string
-    doencas?: string
-    telefone_ctt_emergencia?: string
-    ctt_emergencia_name?: string
-    biometricId?: number
-}
+import Patient from '#models/patient';
 
 export class PatientService {
 
-    public async create(data: CreatePatientDTO, registerBiometric?: string | null) {
+    public async create(data: any, registerBiometric?: string | null) {
         try {
             if (registerBiometric) {
-                const socket = Ws.io
-
-                const cpf = await socket?.emit('consultCpf')
-
-                if (!cpf) {
-                    throw new Error('CPF não encontrado ou ws não conectado.')
-                }
-                const patient = await Patient.findByOrFail('cpf', cpf)
-
+                const patient = await Patient.findByOrFail('cpf', data.cpf)
                 patient.merge({ dy50_id: data.biometricId })
                 await patient.save()
-
                 return patient
             }
 
-            const patient = await Patient.create({ ...data })
+            const dataCreatePatient = {
+                additionalInfo: data.additionalInfo,
+                address: { city: data.city, state: data.state, street: data.address },
+                allergies: data.allergies,
+                birthDate: data.birthDate,
+                bloodType: data.bloodType,
+                cpf: data.cpf,
+                email: data.email,
+                emergency_contact: { name: data.emergencyName, phone: data.emergencyPhone, relation: data.relation },
+                gender: data.gender,
+                insurance: data.insurance,
+                medicalDevices: data.medicalDevices,
+                medications: data.medications,
+                patientName: data.patientName,
+                phone: data.phone,
+                password: 'defaultPassword123',
+                dy50_id: null
+            }
+
+            const patient = await Patient.create({ ...dataCreatePatient })
+            // const patient = await Patient.create({ ...data })
             return patient
         } catch (error) {
             throw error
         }
     }
 
-    public async update(id: number, dados: Partial<Patient>) {
+    public async update(cpf: string, dados: Partial<Patient>) {
         try {
-            const patient = await Patient.findOrFail(id)
+            const patient = await Patient.findOrFail(cpf)
             patient.merge(dados)
             await patient.save()
-            console.log(`[PacienteService] Sucesso: Paciente ${patient.patientName} atualizado.`)
             return patient
         } catch (error) {
-            console.error('[PacienteService] Erro ao atualizar paciente:', error)
+            console.error('[patienteService] Erro ao atualizar patiente:', error)
             throw error // Repassa o erro para quem chamou
         }
     }
+    public async showPatient(data: any) {
 
-    public async show(id: number) {
         try {
-            const patient = await Patient.findOrFail(id)
-            return patient
+            let cpf
+            let name
+            let patients
+
+            if (data?.searchEmail) {
+                patients = await Patient.findByOrFail('email', data.email)
+                return patients
+            }
+
+            if (data?.searchBiometric) {
+                patients = await Patient.findByOrFail('dy50_id', data.biometricId)
+                return patients
+            }
+
+            if (/^\d{11}$/.test(data)) {
+                cpf = data
+                patients = await Patient.findByOrFail('cpf', cpf)
+            } else {
+                name = data
+                patients = await Patient.query().where('patientName', 'like', `%${name}%`)
+            }
+            return patients
         } catch (error) {
-            console.error('[PacienteService] Erro ao buscar paciente:', error)
-            throw error // Repassa o erro para quem chamou
+            console.error('[patienteService] Erro ao buscar patiente:', error)
+            throw error
         }
     }
 
-    public async delete(id: number) {
+    public async delete(cpf: string) {
         try {
-            const patient = await Patient.findOrFail(id)
+            const patient = await Patient.findByOrFail('cpf', cpf)
             await patient.delete()
-            console.log(`[PacienteService] Sucesso: Paciente ID ${id} deletado.`)
             return true
         } catch (error) {
-            console.error('[PacienteService] Erro ao deletar paciente:', error)
+            console.error('[patienteService] Erro ao deletar patiente:', error)
             throw error // Repassa o erro para quem chamou
         }
     }

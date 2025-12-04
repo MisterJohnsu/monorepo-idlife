@@ -1,11 +1,21 @@
-import DoctorController from '#controllers/doctor_controller'
+import EmployeeController from '#controllers/employee_controller'
+import AuthController from '#controllers/auth_controller'
 import router from '@adonisjs/core/services/router'
 
 router.group(() => {
   router.group(() => {
-    router.post('/register', [DoctorController, 'patientCreate'])
-    // router.put('/:id', [PacienteController, 'update'])
-    // router.delete('/:id', [PacienteController, 'destroy'])
-    // router.get('/:id', [PacienteController, 'show'])
-  }).prefix('pacients')
+    router.post('/register', [EmployeeController, 'patientCreate'])
+    router.post('/search', [EmployeeController, 'patientShow'])
+    router.post('/biometric/register', [EmployeeController, 'patientBiometricCreate'])
+    router.delete('/delete/:cpf', [EmployeeController, 'patientDelete'])
+    router.put('/update/:cpf', [EmployeeController, 'patientUpdate'])
+
+    //Login de Pacientes
+    router.post('/login-patient', [AuthController, 'loginPatient'])
+  }).prefix('patients')
+
+  router.group(() => {
+    router.post('/login-employee', [AuthController, 'loginEmployee'])
+    router.post('/register', [EmployeeController, 'employeeCreate'])
+  }).prefix('employees')
 }).prefix('api')
